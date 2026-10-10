@@ -4,6 +4,8 @@ import { NewsFeed } from "@/features/news-feed/components/news-feed";
 import { NewsFeedSkeleton } from "@/features/news-feed/components/news-feed-skeleton";
 import { ReleaseRadar } from "@/features/release-radar/components/release-radar";
 import { ReleaseRadarSkeleton } from "@/features/release-radar/components/release-radar-skeleton";
+import { TrendingStories } from "@/features/trending/components/trending-stories";
+import { TrendingStoriesSkeleton } from "@/features/trending/components/trending-stories-skeleton";
 
 export default function Home() {
   return (
@@ -31,6 +33,9 @@ export default function Home() {
         <aside aria-label="Barra lateral" className="flex flex-col gap-8">
           <Suspense fallback={<ReleaseRadarSkeleton />}>
             <ReleaseRadar />
+          </Suspense>
+          <Suspense fallback={<TrendingStoriesSkeleton />}>
+            <TrendingStories />
           </Suspense>
         </aside>
       </div>
