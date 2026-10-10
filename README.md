@@ -52,18 +52,20 @@ First time running the end-to-end tests: `pnpm exec playwright install chromium`
 - **commit-msg:** commitlint enforces [Conventional Commits](https://www.conventionalcommits.org)
   (for example `feat: add topic filter`, `fix(search): ignore accents`). Body lines are limited to
   100 characters.
-- **CI** (`.github/workflows/ci.yml`): lint, types, format, unit tests and build, plus the
-  end-to-end suite in a separate job.
-- **PR titles** (`.github/workflows/pr-title.yml`) must also be Conventional Commits, because squash
-  merges use the title as the commit message.
+- **CI** (`.github/workflows/ci.yml`): runs on every push to `main`: lint, types, format, unit tests
+  and build, plus the end-to-end suite in a separate job.
+- **Workflow:** trunk-based. Work units are committed straight to `main`; there are no feature
+  branches or pull requests.
 
 ## Project structure
 
 ```text
 src/
   app/          App Router: layout, providers, pages, global styles and tokens
-  lib/          Shared utilities (cn)
-  test/         Test environment fixtures
+  shared/       Code used across features
+    lib/        Shared utilities (cn)
+    ui/         UI primitives (Button, Chip, Pill)
+    tests/      Shared tests and fixtures
 e2e/            Playwright tests
 ```
 

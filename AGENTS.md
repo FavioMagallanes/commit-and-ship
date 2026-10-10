@@ -46,11 +46,12 @@ Commit & Ship es un agregador de novedades tech (Hacker News, GitHub Releases, d
 
 ### Git
 
-- Preguntar antes de cada commit y de cada PR. Nunca hacer push sin aprobación.
-- Ramas `tipo/descripcion` (por ejemplo `feat/news-item`). PR a `main` con squash merge; el título del PR es un Conventional Commit y CI lo valida.
+- Flujo trunk-based: sin ramas de feature ni pull requests. Todo el trabajo se commitea directamente en `main`, en work units con Conventional Commits. El CI corre únicamente sobre `push` a `main`.
+- Preguntar antes de cada commit. Nunca hacer push sin aprobación.
 - Commits chicos, con sentido propio, en Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, `ci:`), con tests y docs junto al código. Cuerpo con líneas de hasta 100 caracteres (commitlint).
-- PRs de hasta ~400 líneas; si no entra, dividir en PRs encadenados.
-- `gh` puede estar autenticado con otra cuenta distinta del dueño del repo (`FavioMagallanes`): verificar antes de cualquier push o PR.
+- Un work unit debe poder revisarse de una vez (orientativo, ~400 líneas); si no entra, dividirlo en varios commits.
+- Antes de hacer push, `lint`, `typecheck`, `format:check` y `test` deben estar en verde: sin PR, esos checks locales y los hooks son la única barrera previa a `main`.
+- `gh` puede estar autenticado con otra cuenta distinta del dueño del repo (`FavioMagallanes`): verificar antes de cualquier push.
 - Los documentos de tareas de trabajo quedan fuera del repo.
 
 ## 3. TypeScript y contratos
