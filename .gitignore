@@ -45,3 +45,7 @@ next-env.d.ts
 /test-results/
 /blob-report/
 /playwright/.cache/
+
+# brand logo originals (large; icons already generated in src/app)
+/public/logo.png
+/public/logo_2.png
