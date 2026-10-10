@@ -2,15 +2,24 @@ import { cn } from "@/shared/lib/cn";
 import { Icon } from "@/shared/ui/icon";
 
 type CardHeaderProps = {
+  id?: string;
   title: string;
   href?: string;
   linkLabel?: string;
   className?: string;
 };
 
-export const CardHeader = ({ title, href, linkLabel = "Ver todo", className }: CardHeaderProps) => (
+export const CardHeader = ({
+  id,
+  title,
+  href,
+  linkLabel = "Ver todo",
+  className,
+}: CardHeaderProps) => (
   <div className={cn("flex items-center justify-between", className)}>
-    <h2 className="font-heading text-lg font-bold text-ink">{title}</h2>
+    <h2 id={id} className="font-heading text-lg font-bold text-ink">
+      {title}
+    </h2>
     {href ? (
       <a
         href={href}
