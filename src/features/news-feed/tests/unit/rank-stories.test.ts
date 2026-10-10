@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { NewsStory } from "@/features/news-feed/model/news-story";
-import { rankStories } from "@/features/trending/model/rank-stories";
+import { rankStories } from "@/features/news-feed/model/rank-stories";
 
 const story = (
   id: string,

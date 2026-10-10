@@ -1,6 +1,6 @@
 import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
-import { rankStories } from "@/features/trending/model/rank-stories";
+import { rankStories } from "@/features/news-feed/model/rank-stories";
 import { CardHeader } from "@/shared/ui/card-header";
 import { ErrorBanner } from "@/shared/ui/error-banner";
 

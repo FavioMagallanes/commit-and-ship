@@ -1,3 +1,4 @@
+import { formatStoryMeta } from "@/features/news-feed/model/format-story-meta";
 import { ExternalLink } from "@/shared/ui/external-link";
 import { Pill } from "@/shared/ui/pill";
 import { type NewsSource, SourceBadge } from "@/shared/ui/source-badge";
@@ -15,13 +16,6 @@ type NewsItemProps = {
   publishedAt: string;
   publishedLabel: string;
 };
-
-const formatStats = (points: number | undefined, commentsCount: number | undefined) => [
-  ...(points ? [`${points} pts`] : []),
-  ...(commentsCount
-    ? [`${commentsCount} ${commentsCount === 1 ? "comentario" : "comentarios"}`]
-    : []),
-];
 
 export const NewsItem = ({
   source,
@@ -43,7 +37,7 @@ export const NewsItem = ({
       <div className="flex items-center gap-2">
         {tag ? <Pill>{tag}</Pill> : null}
         <p className="text-sm text-faint">
-          {[sourceName, ...formatStats(points, commentsCount)].join(" · ")} ·{" "}
+          {formatStoryMeta(sourceName, points, commentsCount)} ·{" "}
           <time dateTime={publishedAt}>{publishedLabel}</time>
         </p>
       </div>
