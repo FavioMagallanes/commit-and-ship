@@ -12,22 +12,25 @@ Fuente de verdad: el diseño en Penpot. La sincronización con `src/app/globals.
 
 Cada token se define una vez con `light-dark()` en `globals.css`. Por defecto sigue al sistema; la clase `.light` o `.dark` en `<html>` fuerza un tema. En Tailwind se usan como `bg-canvas`, `text-ink`, `border-line`, etc.
 
-| Token CSS     | Penpot            | Claro     | Oscuro    | Uso                                 |
-| ------------- | ----------------- | --------- | --------- | ----------------------------------- |
-| `canvas`      | `neutral.bg`      | `#FAFAF9` | `#0C0A09` | Fondo de página                     |
-| `surface`     | `neutral.surface` | `#FFFFFF` | `#171413` | Tarjetas, nav, paneles              |
-| `soft`        | `neutral.soft`    | `#F5F5F4` | `#231F1E` | Fondos suaves, hover, skeleton      |
-| `line`        | `neutral.line`    | `#E7E5E4` | `#2E2927` | Bordes y separadores                |
-| `faint`       | `neutral.faint`   | `#6F6963` | `#968F8A` | Texto terciario (fechas, metadatos) |
-| `muted`       | `neutral.muted`   | `#57534E` | `#A8A29E` | Texto secundario                    |
-| `ink`         | `neutral.ink`     | `#1C1917` | `#F5F5F4` | Texto principal y títulos           |
-| `accent`      | `accent.solid`    | `#10B981` | `#34D399` | Botón primario, indicadores         |
-| `accent-text` | `accent.text`     | `#047857` | `#6EE7B7` | Texto de acento y enlaces           |
-| `accent-soft` | `accent.soft`     | `#D1FAE5` | `#0F2E26` | Fondo de chips y pills de acento    |
-| `on-accent`   | `accent.on`       | `#022C1E` | `#04251A` | Texto sobre `accent`                |
-| `danger-bg`   | `error.bg`        | `#FEF2F2` | `#2A1213` | Fondo de error                      |
-| `danger-line` | `error.line`      | `#FECACA` | `#5B1F22` | Borde de error                      |
-| `danger-text` | `error.text`      | `#991B1B` | `#FCA5A5` | Texto de error                      |
+| Token CSS     | Penpot            | Claro     | Oscuro    | Uso                                                   |
+| ------------- | ----------------- | --------- | --------- | ----------------------------------------------------- |
+| `canvas`      | `neutral.bg`      | `#FAFAF9` | `#0C0A09` | Fondo de página                                       |
+| `surface`     | `neutral.surface` | `#FFFFFF` | `#171413` | Tarjetas, nav, paneles                                |
+| `soft`        | `neutral.soft`    | `#F5F5F4` | `#231F1E` | Fondos suaves, hover, skeleton                        |
+| `line`        | `neutral.line`    | `#E7E5E4` | `#2E2927` | Bordes y separadores                                  |
+| `faint`       | `neutral.faint`   | `#6F6963` | `#968F8A` | Texto terciario (fechas, metadatos)                   |
+| `muted`       | `neutral.muted`   | `#57534E` | `#A8A29E` | Texto secundario                                      |
+| `ink`         | `neutral.ink`     | `#1C1917` | `#F5F5F4` | Texto principal y títulos                             |
+| `accent`      | `accent.solid`    | `#10B981` | `#34D399` | Botón primario, indicadores                           |
+| `accent-text` | `accent.text`     | `#047857` | `#6EE7B7` | Texto de acento y enlaces                             |
+| `accent-soft` | `accent.soft`     | `#D1FAE5` | `#0F2E26` | Fondo de chips y pills de acento                      |
+| `on-accent`   | `accent.on`       | `#022C1E` | `#04251A` | Texto sobre `accent`                                  |
+| `danger-bg`   | `error.bg`        | `#FEF2F2` | `#2A1213` | Fondo de error                                        |
+| `danger-line` | `error.line`      | `#FECACA` | `#5B1F22` | Borde de error                                        |
+| `danger-text` | `error.text`      | `#991B1B` | `#FCA5A5` | Texto de error                                        |
+| `terminal`    | (aproximado)      | `#1C1917` | `#231F1E` | Panel de terminal de la intro (oscuro en ambos temas) |
+
+`terminal-text` (`#E7E5E4`), `terminal-muted` (`#A8A29E`) y `terminal-accent` (`#34D399`) son los colores de texto del panel de terminal. Todos los valores `terminal*` están aproximados desde el tablero y pendientes de afinar contra Penpot.
 
 En Penpot los tokens oscuros llevan el prefijo `dark.`. Reglas:
 

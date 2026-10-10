@@ -31,6 +31,12 @@
   --danger-bg: light-dark(#fef2f2, #2a1213);
   --danger-line: light-dark(#fecaca, #5b1f22);
   --danger-text: light-dark(#991b1b, #fca5a5);
+
+  /* The terminal panel is dark in both themes. Approximated from the board; refine in the visual pass. */
+  --terminal: light-dark(#1c1917, #231f1e);
+  --terminal-text: #e7e5e4;
+  --terminal-muted: #a8a29e;
+  --terminal-accent: #34d399;
 }
 
 :root.light {
@@ -80,6 +86,10 @@
   --color-danger-bg: var(--danger-bg);
   --color-danger-line: var(--danger-line);
   --color-danger-text: var(--danger-text);
+  --color-terminal: var(--terminal);
+  --color-terminal-text: var(--terminal-text);
+  --color-terminal-muted: var(--terminal-muted);
+  --color-terminal-accent: var(--terminal-accent);
 
   --font-sans: var(--font-inter);
   --font-heading: var(--font-geist);

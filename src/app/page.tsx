@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { ActivityTerminal } from "@/features/activity-log/components/activity-terminal";
+import { ActivityTerminalSkeleton } from "@/features/activity-log/components/activity-terminal-skeleton";
 import { IntroStats } from "@/features/news-feed/components/intro-stats";
 import { IntroStatsSkeleton } from "@/features/news-feed/components/intro-stats-skeleton";
 import { NewsFeed } from "@/features/news-feed/components/news-feed";
@@ -19,22 +21,27 @@ export default function Home({ searchParams }: PageProps<"/">) {
 
   return (
     <main className="mx-auto flex max-w-[1200px] flex-col gap-12 px-6 pt-10 pb-12 md:pt-16">
-      <header className="flex flex-col gap-6">
-        <p className="flex items-center gap-2 text-xs font-bold tracking-widest text-accent-text uppercase">
-          <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
-          Agregador de novedades tech
-        </p>
-        <h1 className="font-heading text-4xl leading-tight font-extrabold tracking-tight text-ink">
-          Novedades tech, sin ruido.
-        </h1>
-        <p className="max-w-xl text-lg text-muted">
-          Reunimos en un solo lugar lo que publican {sourcesLabel}, ordenado por hora. Sin cuentas
-          ni algoritmos.
-        </p>
-        <Suspense fallback={<IntroStatsSkeleton />}>
-          <IntroStats />
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
+        <header className="flex flex-col gap-6">
+          <p className="flex items-center gap-2 text-xs font-bold tracking-widest text-accent-text uppercase">
+            <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
+            Agregador de novedades tech
+          </p>
+          <h1 className="font-heading text-4xl leading-tight font-extrabold tracking-tight text-ink">
+            Novedades tech, sin ruido.
+          </h1>
+          <p className="max-w-xl text-lg text-muted">
+            Reunimos en un solo lugar lo que publican {sourcesLabel}, ordenado por hora. Sin cuentas
+            ni algoritmos.
+          </p>
+          <Suspense fallback={<IntroStatsSkeleton />}>
+            <IntroStats />
+          </Suspense>
+        </header>
+        <Suspense fallback={<ActivityTerminalSkeleton />}>
+          <ActivityTerminal />
         </Suspense>
-      </header>
+      </div>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
         <section aria-labelledby="latest-heading" className="flex flex-col gap-8">
           <h2 id="latest-heading" className="font-heading text-xl font-bold text-ink">
