@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-test("home page responds and renders the product heading", async ({ page }) => {
+test("home page responds and renders the main heading", async ({ page }) => {
   const response = await page.goto("/");
 
   expect(response?.ok()).toBe(true);
   await expect(page).toHaveTitle("Commit & Ship");
   await expect(page.locator("html")).toHaveAttribute("lang", "es");
-  await expect(page.getByRole("heading", { level: 1, name: "Commit & Ship" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Novedades tech, sin ruido." }),
+  ).toBeVisible();
 });
 
 test.describe("design tokens", () => {
