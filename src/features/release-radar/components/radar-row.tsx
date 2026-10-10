@@ -18,7 +18,7 @@ export const RadarRow = ({
   publishedLabel,
   isNew = false,
 }: RadarRowProps) => (
-  <li className="flex items-center justify-between">
+  <li className="flex items-center justify-between leading-tight">
     <div className="flex flex-col gap-1">
       <ExternalLink href={href} className="text-md font-semibold text-ink">
         {name}
