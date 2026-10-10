@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens. Source of truth: the Penpot file ("Light", "Dark" and "Foundations" token sets).
+ *
+ * Colors are defined once with light-dark(), so a token holds both themes:
+ * - by default the theme follows the OS (`color-scheme: light dark`);
+ * - adding `.light` or `.dark` to <html> forces a theme (used later by the theme toggle).
+ *
+ * Penpot name -> CSS variable: neutral.bg -> canvas, neutral.surface -> surface,
+ * neutral.soft -> soft, neutral.line -> line, neutral.faint -> faint, neutral.muted -> muted,
+ * neutral.ink -> ink, accent.solid -> accent, accent.text -> accent-text,
+ * accent.soft -> accent-soft, accent.on -> on-accent, error.* -> danger-*.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light dark;
+
+  --canvas: light-dark(#fafaf9, #0c0a09);
+  --surface: light-dark(#ffffff, #171413);
+  --soft: light-dark(#f5f5f4, #231f1e);
+  --line: light-dark(#e7e5e4, #2e2927);
+  --faint: light-dark(#6f6963, #968f8a);
+  --muted: light-dark(#57534e, #a8a29e);
+  --ink: light-dark(#1c1917, #f5f5f4);
+
+  --accent: light-dark(#10b981, #34d399);
+  --accent-text: light-dark(#047857, #6ee7b7);
+  --accent-soft: light-dark(#d1fae5, #0f2e26);
+  --on-accent: light-dark(#022c1e, #04251a);
+
+  --danger-bg: light-dark(#fef2f2, #2a1213);
+  --danger-line: light-dark(#fecaca, #5b1f22);
+  --danger-text: light-dark(#991b1b, #fca5a5);
+}
+
+:root.light {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+/*
+ * Scales that replace Tailwind's defaults. Spacing keeps Tailwind's 4px step
+ * (the Penpot spacing tokens 4..96 map to p-1..p-24) and font weights keep 400..800.
+ */
+@theme {
+  --text-*: initial;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --text-4xl: 44px;
+
+  --radius-*: initial;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-soft: var(--soft);
+  --color-line: var(--line);
+  --color-faint: var(--faint);
+  --color-muted: var(--muted);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-line: var(--danger-line);
+  --color-danger-text: var(--danger-text);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-geist);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
