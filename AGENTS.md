@@ -146,7 +146,7 @@ src/
 ```
 
 - Crear solo lo necesario. Una feature chica empieza con pocos archivos. No rehacer estructura válida ya existente solo por coincidir con el ejemplo.
-- Hoy existen `src/lib/` y `src/test/`; se migran a `src/shared/` cuando se toquen por primera vez, en un commit propio, sin mezclarlo con cambios de comportamiento.
+- Las utilidades compartidas viven en `src/shared/lib/` y los fixtures y pruebas compartidas en `src/shared/tests/`.
 - Mantener juntos UI, acceso a datos y reglas de una feature. Sin carpetas globales gigantes de `components`, `hooks` y `services`.
 - `shared` no importa features. Se reserva para primitivas de UI y utilidades realmente compartidas.
 - Evitar ciclos entre features. Los flujos transversales se componen en `app` o en la feature dueña. Una feature usa a otra solo por un contrato público pequeño, no por sus archivos internos.

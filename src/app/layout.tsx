@@ -5,7 +5,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import { cn } from "@/lib/cn";
+import { cn } from "@/shared/lib/cn";
 
 import { Providers } from "./providers";
 

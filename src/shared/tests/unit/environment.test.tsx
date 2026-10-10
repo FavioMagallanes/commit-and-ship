@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { FIXTURE_TITLE } from "@/test/fixtures";
+import { FIXTURE_TITLE } from "@/shared/tests/fixtures";
 
 function Title({ children }: { children: string }) {
   return <h1>{children}</h1>;
