@@ -14,6 +14,12 @@ describe("Button", () => {
     );
   });
 
+  it("uses the padding and radius from the design", () => {
+    render(<Button>Botón</Button>);
+
+    expect(screen.getByRole("button")).toHaveClass("px-6", "py-3", "rounded-md");
+  });
+
   it("uses the primary variant by default", () => {
     render(<Button>Guardar</Button>);
 

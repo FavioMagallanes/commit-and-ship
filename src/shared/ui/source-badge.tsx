@@ -16,15 +16,15 @@ type SourceBadgeProps = ComponentProps<"span"> & {
   source: NewsSource;
 };
 
+// The badge shows only the logo, so the icon carries the source name as its accessible label.
 export const SourceBadge = ({ source, className, ...props }: SourceBadgeProps) => (
   <span
     className={cn(
-      "inline-flex items-center gap-1.5 rounded-sm bg-soft px-2 py-1 text-xs font-semibold text-muted",
+      "inline-flex size-10 items-center justify-center rounded-md border border-line bg-soft text-muted",
       className,
     )}
     {...props}
   >
-    <Icon name={SOURCES[source].icon} size={14} />
-    {SOURCES[source].name}
+    <Icon name={SOURCES[source].icon} label={SOURCES[source].name} />
   </span>
 );

@@ -18,7 +18,7 @@ describe("Chip", () => {
     expect(screen.getByRole("button")).toHaveClass("bg-surface");
 
     rerender(<Chip active>IA</Chip>);
-    expect(screen.getByRole("button")).toHaveClass("bg-accent-soft", "text-accent-text");
+    expect(screen.getByRole("button")).toHaveClass("bg-ink", "text-canvas");
   });
 
   it("calls onClick when pressed", async () => {

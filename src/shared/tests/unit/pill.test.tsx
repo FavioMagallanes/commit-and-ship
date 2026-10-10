@@ -21,6 +21,12 @@ describe("Pill", () => {
     expect(screen.getByText("Etiqueta")).toHaveClass(expectedClass);
   });
 
+  it("uses the padding from the design", () => {
+    render(<Pill>Etiqueta</Pill>);
+
+    expect(screen.getByText("Etiqueta")).toHaveClass("px-3", "py-1");
+  });
+
   it("uses the neutral tone by default", () => {
     render(<Pill>Etiqueta</Pill>);
 

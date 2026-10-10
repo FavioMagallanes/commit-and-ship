@@ -9,22 +9,26 @@ describe("SourceBadge", () => {
     ["gh", "GitHub"],
     ["dev", "dev.to"],
     ["blog", "Blog"],
-  ] as const)("shows the full name of the %s source", (source, name) => {
+  ] as const)("names the %s source for assistive technology", (source, name) => {
     render(<SourceBadge source={source} />);
 
-    expect(screen.getByText(name)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name })).toBeInTheDocument();
   });
 
-  it("keeps the logo decorative so the name is read only once", () => {
-    const { container } = render(<SourceBadge source="gh" />);
+  it("is a 40px square box with the design border and radius", () => {
+    render(<SourceBadge source="gh" />);
 
-    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "GitHub" }).parentElement).toHaveClass(
+      "size-10",
+      "rounded-md",
+      "border-line",
+      "bg-soft",
+    );
   });
 
   it("allows extra classes", () => {
-    render(<SourceBadge source="hn" className="w-fit" />);
+    render(<SourceBadge source="hn" className="shrink-0" />);
 
-    expect(screen.getByText("Hacker News").closest("span")).toHaveClass("w-fit");
+    expect(screen.getByRole("img", { name: "Hacker News" }).parentElement).toHaveClass("shrink-0");
   });
 });
