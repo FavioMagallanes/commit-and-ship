@@ -72,4 +72,36 @@ describe("NewsFeed", () => {
     expect(screen.getByText("Probá con otro término.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Limpiar búsqueda" })).toHaveAttribute("href", "/");
   });
+
+  it("leaves the featured story out of the list so it is not shown twice", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "Top story", points: 500 },
+      { ...STORY, id: "hn-2", title: "Other story", points: 5 },
+    ]);
+
+    render(await NewsFeed({ loadStories, now: NOW }));
+
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: /Top story/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Other story/ })).toBeInTheDocument();
+  });
+
+  it("keeps every story in the list while searching", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "Top story", points: 500 },
+      { ...STORY, id: "hn-2", title: "Other story", points: 5 },
+    ]);
+
+    render(await NewsFeed({ loadStories, now: NOW, query: Promise.resolve("story") }));
+
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+  });
+
+  it("keeps a single story in the list instead of showing an empty state", async () => {
+    loadStories.mockResolvedValueOnce([{ ...STORY, id: "hn-1", title: "Only story", points: 500 }]);
+
+    render(await NewsFeed({ loadStories, now: NOW }));
+
+    expect(screen.getByRole("link", { name: /Only story/ })).toBeInTheDocument();
+  });
 });

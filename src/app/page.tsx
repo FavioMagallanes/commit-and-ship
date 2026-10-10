@@ -2,6 +2,8 @@ import { Suspense } from "react";
 
 import { ActivityTerminal } from "@/features/activity-log/components/activity-terminal";
 import { ActivityTerminalSkeleton } from "@/features/activity-log/components/activity-terminal-skeleton";
+import { FeaturedStory } from "@/features/news-feed/components/featured-story";
+import { FeaturedStorySkeleton } from "@/features/news-feed/components/featured-story-skeleton";
 import { IntroStats } from "@/features/news-feed/components/intro-stats";
 import { IntroStatsSkeleton } from "@/features/news-feed/components/intro-stats-skeleton";
 import { NewsFeed } from "@/features/news-feed/components/news-feed";
@@ -43,14 +45,19 @@ export default function Home({ searchParams }: PageProps<"/">) {
         </Suspense>
       </div>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <section aria-labelledby="latest-heading" className="flex flex-col gap-8">
-          <h2 id="latest-heading" className="font-heading text-xl font-bold text-ink">
-            Más recientes
-          </h2>
-          <Suspense fallback={<NewsFeedSkeleton />}>
-            <NewsFeed query={query} />
+        <div className="flex flex-col gap-8">
+          <Suspense fallback={<FeaturedStorySkeleton />}>
+            <FeaturedStory query={query} />
           </Suspense>
-        </section>
+          <section aria-labelledby="latest-heading" className="flex flex-col gap-8">
+            <h2 id="latest-heading" className="font-heading text-xl font-bold text-ink">
+              Más recientes
+            </h2>
+            <Suspense fallback={<NewsFeedSkeleton />}>
+              <NewsFeed query={query} />
+            </Suspense>
+          </section>
+        </div>
         <aside aria-label="Barra lateral" className="flex flex-col gap-8">
           <Suspense fallback={<ReleaseRadarSkeleton />}>
             <ReleaseRadar query={query} />
