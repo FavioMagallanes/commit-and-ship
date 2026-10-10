@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { cn } from "@/shared/lib/cn";
+import { SiteFooter } from "@/shared/ui/site-footer";
 
 import { Providers } from "./providers";
 
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-dvh bg-canvas font-sans text-ink antialiased">
         <NuqsAdapter>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <SiteFooter />
+          </Providers>
         </NuqsAdapter>
       </body>
     </html>
