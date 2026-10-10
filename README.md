@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Commit & Ship
 
-## Getting Started
+A tech news aggregator for developers: what matters from Hacker News, GitHub releases, dev.to and
+official blogs, ordered by topic and time, without accounts or algorithms. The UI is in Spanish.
 
-First, run the development server:
+> **Status:** foundation only. The app shell, design tokens, tooling and CI are in place; the news
+> feed, data layer and components are built in later features.
+
+## Stack
+
+| Area      | Choice                                                                            |
+| --------- | --------------------------------------------------------------------------------- |
+| Framework | Next.js 16 (App Router, Turbopack), React 19, React Compiler                      |
+| Language  | TypeScript ~6.0                                                                   |
+| Styling   | Tailwind CSS 4 with design tokens in CSS (`light-dark()` for light and dark)      |
+| Fonts     | `next/font`: Geist (headings), Inter (body), Geist Mono                           |
+| Data      | TanStack Query (client), nuqs (filters in the URL), Zod added with the data layer |
+| Quality   | Prettier, ESLint (flat config, import sorting), Husky, lint-staged, commitlint    |
+| Tests     | Vitest + Testing Library (unit), Playwright (end to end, Chromium)                |
+| CI / Host | GitHub Actions, Vercel                                                            |
+
+## Requirements
+
+- Node.js `>=22.12` (`.nvmrc` pins 22)
+- pnpm 10 (the exact version is in `packageManager`; `corepack enable` installs it)
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script                                   | What it does                                         |
+| ---------------------------------------- | ---------------------------------------------------- |
+| `pnpm dev` / `pnpm build` / `pnpm start` | Next.js development server, production build, server |
+| `pnpm lint`                              | ESLint (includes import sorting)                     |
+| `pnpm typecheck`                         | Generates route types and runs `tsc --noEmit`        |
+| `pnpm format` / `pnpm format:check`      | Prettier write / check                               |
+| `pnpm test` / `pnpm test:watch`          | Vitest once / in watch mode                          |
+| `pnpm test:e2e`                          | Playwright (builds and starts the app itself)        |
 
-## Learn More
+First time running the end-to-end tests: `pnpm exec playwright install chromium`.
 
-To learn more about Next.js, take a look at the following resources:
+## Quality gates
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **pre-commit:** lint-staged runs `eslint --fix` and `prettier --write` on staged files.
+- **commit-msg:** commitlint enforces [Conventional Commits](https://www.conventionalcommits.org)
+  (for example `feat: add topic filter`, `fix(search): ignore accents`). Body lines are limited to
+  100 characters.
+- **CI** (`.github/workflows/ci.yml`): lint, types, format, unit tests and build, plus the
+  end-to-end suite in a separate job.
+- **PR titles** (`.github/workflows/pr-title.yml`) must also be Conventional Commits, because squash
+  merges use the title as the commit message.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```text
+src/
+  app/          App Router: layout, providers, pages, global styles and tokens
+  lib/          Shared utilities (cn)
+  test/         Test environment fixtures
+e2e/            Playwright tests
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Design tokens
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tokens come from the Penpot design file and live in `src/app/globals.css`:
+
+- Colors are CSS variables defined with `light-dark()`. The theme follows the OS; adding `.light` or
+  `.dark` to `<html>` forces one. Use them as Tailwind utilities: `bg-canvas`, `bg-surface`,
+  `text-ink`, `text-muted`, `border-line`, `bg-accent`, `text-on-accent`, `text-danger-text`.
+- The type scale (`text-xs` to `text-4xl`, plus `text-md`) and radii (`rounded-sm` to `rounded-xl`,
+  `rounded-full`) replace Tailwind's defaults. Spacing uses Tailwind's 4px step.
+
+## Version notes
+
+Some tools are intentionally not on their very latest major, to stay compatible with the rest:
+
+- **TypeScript ~6.0:** `typescript-eslint` supports `typescript <6.1`.
+- **ESLint 9:** the plugins used by `eslint-config-next` (React, jsx-a11y, import) support up to 9.
+- **lint-staged 16:** version 17 requires Node `>=22.22.1`.
+- **Cache Components and Partial Prefetching** are enabled in `next.config.ts`, which is the default
+  of `create-next-app` 16.4.
