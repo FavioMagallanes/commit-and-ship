@@ -8,10 +8,20 @@ type NewsItemProps = {
   sourceName: string;
   title: string;
   href: string;
-  tag: string;
+  /** Topic of the story. Omitted while the story has none. */
+  tag?: string;
+  points?: number;
+  commentsCount?: number;
   publishedAt: string;
   publishedLabel: string;
 };
+
+const formatStats = (points: number | undefined, commentsCount: number | undefined) => [
+  ...(points ? [`${points} pts`] : []),
+  ...(commentsCount
+    ? [`${commentsCount} ${commentsCount === 1 ? "comentario" : "comentarios"}`]
+    : []),
+];
 
 export const NewsItem = ({
   source,
@@ -19,6 +29,8 @@ export const NewsItem = ({
   title,
   href,
   tag,
+  points,
+  commentsCount,
   publishedAt,
   publishedLabel,
 }: NewsItemProps) => (
@@ -29,9 +41,10 @@ export const NewsItem = ({
         <ExternalLink href={href}>{title}</ExternalLink>
       </h3>
       <div className="flex items-center gap-2">
-        <Pill>{tag}</Pill>
+        {tag ? <Pill>{tag}</Pill> : null}
         <p className="text-sm text-faint">
-          {sourceName} · <time dateTime={publishedAt}>{publishedLabel}</time>
+          {[sourceName, ...formatStats(points, commentsCount)].join(" · ")} ·{" "}
+          <time dateTime={publishedAt}>{publishedLabel}</time>
         </p>
       </div>
     </div>

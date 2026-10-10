@@ -33,7 +33,8 @@ export const NewsList = ({ stories, now }: NewsListProps) => {
             sourceName={story.sourceName}
             title={story.title}
             href={story.url}
-            tag={`${story.points} puntos`}
+            points={story.points}
+            commentsCount={story.commentsCount}
             publishedAt={story.publishedAt}
             publishedLabel={formatRelativeTime(story.publishedAt, now)}
           />

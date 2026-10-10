@@ -33,4 +33,23 @@ describe("NewsItem", () => {
     expect(screen.getByText("hace 1 d")).toHaveAttribute("datetime", props.publishedAt);
     expect(screen.getByText(/dev\.to ·/)).toBeInTheDocument();
   });
+
+  it("shows points and comments after the source name when the source has them", () => {
+    render(<NewsItem {...props} sourceName="Hacker News" points={412} commentsCount={186} />);
+
+    expect(screen.getByText(/Hacker News · 412 pts · 186 comentarios ·/)).toBeInTheDocument();
+  });
+
+  it("uses the singular for a single comment and skips zero points", () => {
+    render(<NewsItem {...props} sourceName="Hacker News" points={0} commentsCount={1} />);
+
+    expect(screen.getByText(/Hacker News · 1 comentario ·/)).toBeInTheDocument();
+    expect(screen.queryByText(/pts/)).not.toBeInTheDocument();
+  });
+
+  it("renders no tag pill when there is no topic", () => {
+    render(<NewsItem {...props} tag={undefined} />);
+
+    expect(screen.queryByText("DevOps")).not.toBeInTheDocument();
+  });
 });

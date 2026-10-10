@@ -30,10 +30,10 @@ describe("NewsList", () => {
     );
   });
 
-  it("shows the points and the relative publication time", () => {
+  it("shows points, comments and the relative publication time", () => {
     render(<NewsList now={NOW} stories={[story()]} />);
 
-    expect(screen.getByText("120 puntos")).toBeInTheDocument();
+    expect(screen.getByText(/Hacker News · 120 pts · 8 comentarios ·/)).toBeInTheDocument();
     expect(screen.getByText("hace 3 h")).toHaveAttribute("datetime", "2026-10-10T15:30:00.000Z");
   });
 
