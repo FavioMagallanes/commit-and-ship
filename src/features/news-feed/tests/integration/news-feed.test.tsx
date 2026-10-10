@@ -21,7 +21,7 @@ describe("NewsFeed", () => {
       },
     ]);
 
-    render(await NewsFeed({ loadStories }));
+    render(await NewsFeed({ loadStories, now: new Date("2026-10-10T18:30:00Z") }));
 
     expect(screen.getByRole("link", { name: /A story/ })).toBeInTheDocument();
   });
@@ -29,9 +29,12 @@ describe("NewsFeed", () => {
   it("shows an error banner, not an empty list, when the source fails", async () => {
     loadStories.mockRejectedValueOnce(new Error("boom"));
 
-    render(await NewsFeed({ loadStories }));
+    render(await NewsFeed({ loadStories, now: new Date("2026-10-10T18:30:00Z") }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar Hacker News");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "El resto de las fuentes funciona con normalidad.",
+    );
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
   });
 });

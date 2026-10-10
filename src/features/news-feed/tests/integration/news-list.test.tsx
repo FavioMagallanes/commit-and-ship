@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import { NewsList } from "@/features/news-feed/components/news-list";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 
+const NOW = new Date("2026-10-10T18:30:00Z");
+
 const story = (overrides: Partial<NewsStory> = {}): NewsStory => ({
   id: "hn-1",
   source: "hn",
@@ -18,7 +20,7 @@ const story = (overrides: Partial<NewsStory> = {}): NewsStory => ({
 
 describe("NewsList", () => {
   it("renders one article per story inside a named list", () => {
-    render(<NewsList stories={[story(), story({ id: "hn-2", title: "Another" })]} />);
+    render(<NewsList now={NOW} stories={[story(), story({ id: "hn-2", title: "Another" })]} />);
 
     const list = screen.getByRole("list", { name: "Novedades" });
     expect(within(list).getAllByRole("article")).toHaveLength(2);
@@ -28,17 +30,17 @@ describe("NewsList", () => {
     );
   });
 
-  it("shows the points and the publication date", () => {
-    render(<NewsList stories={[story()]} />);
+  it("shows the points and the relative publication time", () => {
+    render(<NewsList now={NOW} stories={[story()]} />);
 
     expect(screen.getByText("120 puntos")).toBeInTheDocument();
-    expect(screen.getByText("10 oct")).toHaveAttribute("datetime", "2026-10-10T15:30:00.000Z");
+    expect(screen.getByText("hace 3 h")).toHaveAttribute("datetime", "2026-10-10T15:30:00.000Z");
   });
 
   it("shows an empty state instead of an empty list", () => {
-    render(<NewsList stories={[]} />);
+    render(<NewsList now={NOW} stories={[]} />);
 
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
-    expect(screen.getByText("No hay novedades para mostrar.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "No encontramos novedades" })).toBeInTheDocument();
   });
 });
