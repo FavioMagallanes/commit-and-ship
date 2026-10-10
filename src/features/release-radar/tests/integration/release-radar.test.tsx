@@ -55,4 +55,25 @@ describe("ReleaseRadar", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar el radar de versiones");
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
+
+  it("keeps only the releases that match the search", async () => {
+    loadReleases.mockResolvedValueOnce([
+      release(),
+      release({ repo: "facebook/react", name: "React", version: "v20.1.0" }),
+    ]);
+
+    render(await ReleaseRadar({ loadReleases, now: NOW, query: Promise.resolve("react") }));
+
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: "React" })).toBeInTheDocument();
+  });
+
+  it("says so when no release matches the search", async () => {
+    loadReleases.mockResolvedValueOnce([release()]);
+
+    render(await ReleaseRadar({ loadReleases, now: NOW, query: Promise.resolve("zzz") }));
+
+    expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+    expect(screen.getByText("Ninguna versión coincide con la búsqueda.")).toBeInTheDocument();
+  });
 });

@@ -4,10 +4,14 @@ import { NewsFeed } from "@/features/news-feed/components/news-feed";
 import { NewsFeedSkeleton } from "@/features/news-feed/components/news-feed-skeleton";
 import { ReleaseRadar } from "@/features/release-radar/components/release-radar";
 import { ReleaseRadarSkeleton } from "@/features/release-radar/components/release-radar-skeleton";
+import { loadSearchQuery } from "@/features/search-filters/model/search-params";
 import { TrendingStories } from "@/features/trending/components/trending-stories";
 import { TrendingStoriesSkeleton } from "@/features/trending/components/trending-stories-skeleton";
 
-export default function Home() {
+export default function Home({ searchParams }: PageProps<"/">) {
+  // Not awaited here: each block reads the query inside its own Suspense boundary.
+  const query = loadSearchQuery(searchParams);
+
   return (
     <main className="mx-auto flex max-w-[1200px] flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-3">
@@ -27,12 +31,12 @@ export default function Home() {
             Más recientes
           </h2>
           <Suspense fallback={<NewsFeedSkeleton />}>
-            <NewsFeed />
+            <NewsFeed query={query} />
           </Suspense>
         </section>
         <aside aria-label="Barra lateral" className="flex flex-col gap-8">
           <Suspense fallback={<ReleaseRadarSkeleton />}>
-            <ReleaseRadar />
+            <ReleaseRadar query={query} />
           </Suspense>
           <Suspense fallback={<TrendingStoriesSkeleton />}>
             <TrendingStories />

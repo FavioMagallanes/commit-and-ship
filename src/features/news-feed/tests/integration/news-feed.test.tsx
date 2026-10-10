@@ -4,6 +4,19 @@ import { describe, expect, it, vi } from "vitest";
 import { NewsFeed } from "@/features/news-feed/components/news-feed";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 
+const NOW = new Date("2026-10-10T18:30:00Z");
+
+const STORY: NewsStory = {
+  id: "hn-1",
+  source: "hn",
+  sourceName: "Hacker News",
+  title: "A story",
+  url: "https://example.com/story",
+  publishedAt: "2026-10-10T15:30:00.000Z",
+  points: 1,
+  commentsCount: 0,
+};
+
 const loadStories = vi.fn<() => Promise<NewsStory[]>>();
 
 describe("NewsFeed", () => {
@@ -36,5 +49,27 @@ describe("NewsFeed", () => {
       "El resto de las fuentes funciona con normalidad.",
     );
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
+  it("keeps only the stories that match the search", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "Rust bundler" },
+      { ...STORY, id: "hn-2", title: "Guía de programación" },
+    ]);
+
+    render(await NewsFeed({ loadStories, now: NOW, query: Promise.resolve("programacion") }));
+
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: /Guía de programación/ })).toBeInTheDocument();
+  });
+
+  it("explains that nothing matched and offers to clear the search", async () => {
+    loadStories.mockResolvedValueOnce([STORY]);
+
+    render(await NewsFeed({ loadStories, now: NOW, query: Promise.resolve("zzz") }));
+
+    expect(screen.getByRole("heading", { name: "No encontramos novedades" })).toBeInTheDocument();
+    expect(screen.getByText("Probá con otro término.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Limpiar búsqueda" })).toHaveAttribute("href", "/");
   });
 });
