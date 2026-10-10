@@ -14,3 +14,10 @@ export type NewsStory = {
   points: number;
   commentsCount: number;
 };
+
+/** A set of stories plus the instant the source was last read, for "updated N min ago". */
+export type NewsSnapshot = {
+  stories: NewsStory[];
+  /** ISO 8601 instant in UTC when the stories were fetched from the source. */
+  fetchedAt: string;
+};

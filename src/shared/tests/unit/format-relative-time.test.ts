@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatRelativeTime } from "@/shared/lib/format-relative-time";
+import { formatElapsedTime, formatRelativeTime } from "@/shared/lib/format-relative-time";
 
 const NOW = new Date("2026-10-10T12:00:00Z");
 const ago = (ms: number) => new Date(NOW.getTime() - ms).toISOString();
@@ -28,5 +28,28 @@ describe("formatRelativeTime", () => {
 
   it("returns an empty string for an invalid date", () => {
     expect(formatRelativeTime("nope", NOW)).toBe("");
+  });
+});
+
+describe("formatElapsedTime", () => {
+  it.each([
+    [5 * MIN, "5 min"],
+    [3 * HOUR, "3 h"],
+    [2 * DAY, "2 d"],
+    [14 * DAY, "2 sem"],
+    [65 * DAY, "2 meses"],
+    [400 * DAY, "1 año"],
+  ])("formats %i ms as %s", (elapsed, expected) => {
+    expect(formatElapsedTime(ago(elapsed), NOW)).toBe(expected);
+  });
+
+  it("is the relative label without the leading 'hace'", () => {
+    expect(`hace ${formatElapsedTime(ago(3 * HOUR), NOW)}`).toBe(
+      formatRelativeTime(ago(3 * HOUR), NOW),
+    );
+  });
+
+  it("returns an empty string for an invalid date", () => {
+    expect(formatElapsedTime("nope", NOW)).toBe("");
   });
 });
