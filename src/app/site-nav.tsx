@@ -3,9 +3,10 @@ import Link from "next/link";
 
 import { SearchBox } from "@/features/search-filters/components/search-box";
 import { ThemeToggle } from "@/features/theme/components/theme-toggle";
+import { SourcesMenu } from "@/shared/ui/sources-menu";
 
 export const SiteNav = () => (
-  <header className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-4 gap-y-3 px-6 py-4 md:h-19 md:flex-nowrap md:py-0">
+  <header className="mx-auto flex max-w-[1200px] flex-nowrap items-center justify-between gap-4 px-6 py-4 md:h-19 md:py-0">
     <Link
       href="/"
       aria-label="Commit & Ship, ir al inicio"
@@ -21,11 +22,18 @@ export const SiteNav = () => (
         Commit &amp; Ship
       </span>
     </Link>
-    <div className="order-last w-full md:order-none md:flex md:w-auto md:flex-1 md:justify-center">
+    {/* The mobile page shows its own search field below the intro. */}
+    <div className="hidden md:flex md:flex-1 md:justify-center">
       <Suspense>
         <SearchBox />
       </Suspense>
     </div>
-    <ThemeToggle />
+    <div className="flex items-center gap-2 md:gap-6">
+      <SourcesMenu />
+      {/* Mobile shows [theme, menu]; desktop keeps the design order [Fuentes, theme]. */}
+      <div className="order-first flex md:order-none">
+        <ThemeToggle />
+      </div>
+    </div>
   </header>
 );

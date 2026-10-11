@@ -53,10 +53,11 @@ export const ThemeToggle = () => {
       type="button"
       onClick={() => applyTheme(other)}
       aria-label={`Tema ${LABELS[theme]}. Cambiar a ${LABELS[other].toLowerCase()}`}
-      className="inline-flex items-center gap-2 rounded-full border border-line bg-surface py-2 pr-4 pl-3 text-sm font-semibold text-muted transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text"
+      className="inline-flex size-10 items-center justify-center gap-2 rounded-full border border-line bg-surface text-sm font-semibold text-muted transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text md:size-auto md:py-2 md:pr-4 md:pl-3"
     >
+      {/* Icon only on mobile; the accessible name never depends on the visible label. */}
       <Icon name={theme === "dark" ? "moon" : "sun"} />
-      {LABELS[theme]}
+      <span className="hidden md:inline">{LABELS[theme]}</span>
     </button>
   );
 };

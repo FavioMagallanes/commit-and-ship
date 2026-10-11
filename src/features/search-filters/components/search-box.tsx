@@ -17,9 +17,13 @@ export const SearchBox = () => {
 
   useEffect(() => {
     const focusOnShortcut = (event: KeyboardEvent) => {
+      // Several fields may be mounted for different breakpoints; only the rendered one answers.
+      const input = inputRef.current;
+      if (!input || input.offsetParent === null) return;
+
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        inputRef.current?.focus();
+        input.focus();
       }
     };
 

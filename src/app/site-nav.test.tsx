@@ -26,6 +26,15 @@ describe("SiteNav", () => {
     expect(screen.getByRole("button", { name: /Tema/ })).toBeInTheDocument();
   });
 
+  it("offers the sources menu", () => {
+    render(<SiteNav />, { wrapper: withNuqsTestingAdapter() });
+
+    expect(screen.getByRole("button", { name: "Menú de fuentes" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+  });
+
   it("offers the search field", () => {
     render(<SiteNav />, { wrapper: withNuqsTestingAdapter() });
 

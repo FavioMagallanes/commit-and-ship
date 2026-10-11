@@ -18,7 +18,9 @@ import { TrendingStories } from "@/features/trending/components/trending-stories
 import { TrendingStoriesSkeleton } from "@/features/trending/components/trending-stories-skeleton";
 import { ACTIVE_SOURCES } from "@/shared/lib/active-sources";
 
-const sourcesLabel = new Intl.ListFormat("es", { type: "conjunction" }).format(ACTIVE_SOURCES);
+const sourcesLabel = new Intl.ListFormat("es", { type: "conjunction" }).format(
+  ACTIVE_SOURCES.map((source) => source.name),
+);
 
 export default function Home({ searchParams }: PageProps<"/">) {
   // Not awaited here: each block reads the query inside its own Suspense boundary.

@@ -5,7 +5,9 @@ export const SiteFooter = () => (
     <hr className="border-line" />
     <div className="flex flex-col gap-2 py-8 md:flex-row md:items-center md:justify-between">
       <p className="text-base text-muted">Commit &amp; Ship · Agregador de novedades tech</p>
-      <p className="text-sm text-faint">Fuentes: {ACTIVE_SOURCES.join(" · ")}</p>
+      <p className="text-sm text-faint">
+        Fuentes: {ACTIVE_SOURCES.map((source) => source.name).join(" · ")}
+      </p>
     </div>
   </footer>
 );
