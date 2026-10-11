@@ -1,3 +1,4 @@
+import { isAcceptableText } from "@/features/conversation/model/content-filter";
 import type { ConversationPost } from "@/features/conversation/model/conversation-post";
 import { htmlToText } from "@/features/conversation/model/html-to-text";
 import type { MastodonStatus } from "@/features/conversation/model/mastodon-status";
@@ -29,10 +30,12 @@ const isRecent = (createdAt: string, now: Date) => {
 
 /**
  * Whether a status is a recent, self-contained post written by a person, safe to show without a
- * content warning. Bridged accounts (brid.gy) repost other networks, so they are left out.
+ * content warning. Bridged accounts (brid.gy) repost other networks, so they are left out, and
+ * the text must pass the content filter (spam, scams, adult or hateful content).
  */
 export const isConversationWorthy = (status: MastodonStatus, now: Date): boolean => {
-  const textLength = htmlToText(status.content).length;
+  const text = htmlToText(status.content);
+  const textLength = text.length;
 
   return (
     !status.sensitive &&
@@ -47,7 +50,8 @@ export const isConversationWorthy = (status: MastodonStatus, now: Date): boolean
     textLength <= MAX_TEXT_LENGTH &&
     status.url !== null &&
     isHttpUrl(status.url) &&
-    isRecent(status.created_at, now)
+    isRecent(status.created_at, now) &&
+    isAcceptableText(text)
   );
 };
 

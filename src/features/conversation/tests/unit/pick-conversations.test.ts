@@ -9,6 +9,11 @@ import {
 const NOW = new Date("2026-10-10T12:00:00.000Z");
 
 const LONG_ENOUGH = "Una reflexión sobre bases de datos que vale la pena compartir hoy.";
+const SCAM = "Gran crypto giveaway: enviá 1 BTC y recibí 2 de vuelta hoy mismo.";
+
+// Varied letters, so the text never trips the repeated-character spam rule.
+const textOfLength = (length: number) =>
+  Array.from({ length }, (_, index) => "abcdefghij"[index % 10]).join("");
 
 const status = (overrides: Partial<MastodonStatus> = {}): MastodonStatus => ({
   id: "1",
@@ -47,7 +52,8 @@ describe("isConversationWorthy", () => {
     ["in another language", { language: "de" }],
     ["without a language", { language: null }],
     ["too short", { content: "<p>Nice!</p>" }],
-    ["too long", { content: `<p>${"a".repeat(281)}</p>` }],
+    ["too long", { content: `<p>${textOfLength(281)}</p>` }],
+    ["spam by its content", { content: `<p>${SCAM}</p>` }],
     ["without a url", { url: null }],
     ["linked with a non http(s) url", { url: "javascript:alert(1)" }],
     ["dated with an invalid date", { created_at: "yesterday" }],
@@ -58,15 +64,15 @@ describe("isConversationWorthy", () => {
   });
 
   it("accepts English posts and the length limits", () => {
-    expect(isConversationWorthy(status({ language: "en", content: "a".repeat(40) }), NOW)).toBe(
+    expect(isConversationWorthy(status({ language: "en", content: textOfLength(40) }), NOW)).toBe(
       true,
     );
-    expect(isConversationWorthy(status({ content: "a".repeat(280) }), NOW)).toBe(true);
-    expect(isConversationWorthy(status({ content: "a".repeat(39) }), NOW)).toBe(false);
+    expect(isConversationWorthy(status({ content: textOfLength(280) }), NOW)).toBe(true);
+    expect(isConversationWorthy(status({ content: textOfLength(39) }), NOW)).toBe(false);
   });
 
   it("measures the length on the text, not on the markup", () => {
-    const content = `<p><a href="https://example.com/a-very-long-url-that-adds-markup">${"a".repeat(30)}</a></p>`;
+    const content = `<p><a href="https://example.com/a-very-long-url-that-adds-markup">${textOfLength(30)}</a></p>`;
 
     expect(isConversationWorthy(status({ content }), NOW)).toBe(false);
   });
@@ -151,6 +157,24 @@ describe("pickConversations", () => {
     expect(
       pickConversations([status({ sensitive: true }), status({ id: "2", language: null })], NOW),
     ).toEqual([]);
+  });
+
+  it("leaves out spam even when it is the most popular post, and shows the next best", () => {
+    const posts = pickConversations(
+      [
+        status({
+          id: "spam",
+          account: account("spammer"),
+          content: `<p>${SCAM}</p>`,
+          favourites_count: 99,
+        }),
+        status({ id: "good", account: account("bob"), favourites_count: 3 }),
+        status({ id: "other", account: account("carol"), favourites_count: 1 }),
+      ],
+      NOW,
+    );
+
+    expect(posts.map((post) => post.id)).toEqual(["good", "other"]);
   });
 
   it("truncates the text to 200 characters with an ellipsis", () => {
