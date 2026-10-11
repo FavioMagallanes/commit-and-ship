@@ -74,18 +74,21 @@ Claro y oscuro, siguiendo al sistema por defecto. El toggle de la navegación fu
 
 Se implementan con React, `cva` y `cn`. Cada uno nace de un componente de Penpot con sus variantes.
 
-| Componente   | Variantes                           | Notas                                      |
-| ------------ | ----------------------------------- | ------------------------------------------ |
-| Button       | Primario, Secundario, Peligro       | En uso: Primario y Peligro                 |
-| Chip         | Inactivo, Activo                    | Filtros por tema                           |
-| Pill         | Neutro, Acento, Sólido              | Etiquetas cortas                           |
-| Source Badge | HN, GH, DEV, Blog                   | Logo monocromático + nombre de la fuente   |
-| News Item    | Escritorio (820 px), Móvil (350 px) | Contiene Source Badge y Pill               |
-| Card Header  | Con enlace, Sin enlace              | Título de las tarjetas de la barra lateral |
-| Radar Row    | Nuevo: Sí, No                       | Versiones publicadas (GitHub Releases)     |
-| Ranking Row  | Primero, Resto                      | "Lo más hablado hoy"                       |
-| Post Row     | Base                                | "En conversación"                          |
-| Icon         | 13 variantes                        | Ver sección de iconos                      |
+| Componente   | Variantes                           | Notas                                                 |
+| ------------ | ----------------------------------- | ----------------------------------------------------- |
+| Button       | Primario, Secundario, Peligro       | En uso: Primario y Peligro                            |
+| Chip         | Inactivo, Activo                    | Filtros por tema                                      |
+| Pill         | Neutro, Acento, Sólido              | Etiquetas cortas                                      |
+| Source Badge | HN, GH, DEV, Blog                   | Logo monocromático + nombre de la fuente              |
+| News Item    | Escritorio (820 px), Móvil (350 px) | Contiene Source Badge y Pill                          |
+| Card Header  | Con enlace, Sin enlace              | Título de las tarjetas de la barra lateral            |
+| Radar Row    | Nuevo: Sí, No                       | Versiones publicadas (GitHub Releases)                |
+| Ranking Row  | Primero, Resto                      | "Lo más hablado hoy"                                  |
+| Post Row     | Base                                | "En conversación"                                     |
+| Icon         | 13 variantes                        | Ver sección de iconos                                 |
+| Select       | Cerrado, Abierto                    | Orden de la lista; menú propio, aún no está en Penpot |
+
+`Select` se implementó antes que en Penpot y debe agregarse allí. Cerrado es un botón sin caja ni borde: la etiqueta con dos puntos en `muted`, el valor elegido en `ink` semibold y un `chevron-down` que gira al abrir. Abierto muestra un panel alineado a la derecha del botón, con superficie (`surface`), borde (`line`), radio `lg` y sombra; la opción activa usa `soft` y la seleccionada `accent-soft` con texto `accent-text`. Sigue el patrón ARIA listbox.
 
 ## Pantallas y estados
 
