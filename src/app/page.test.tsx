@@ -22,4 +22,11 @@ describe("Home page", () => {
       screen.getByText(/lo que publican Hacker News y GitHub, ordenado por hora/),
     ).toBeInTheDocument();
   });
+
+  it("offers the topic filter in the intro", () => {
+    render(<Home {...props} />, { wrapper: withNuqsTestingAdapter() });
+
+    expect(screen.getByRole("region", { name: "Filtrar por tema" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Todo" })).toHaveAttribute("aria-pressed", "true");
+  });
 });

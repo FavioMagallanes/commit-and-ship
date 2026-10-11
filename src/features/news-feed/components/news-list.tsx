@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { NewsStory } from "@/features/news-feed/model/news-story";
+import { classifyTopic, topicLabels } from "@/features/topics/model/topics";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { Icon } from "@/shared/ui/icon";
 
@@ -9,13 +10,18 @@ import { NewsItem } from "./news-item";
 type NewsListProps = {
   stories: NewsStory[];
   now: Date;
-  /** True when the list is empty because of the search, not because the source has nothing. */
-  isSearching?: boolean;
+  /** True when the list is empty because of a search or a topic, not because the source has nothing. */
+  isFiltering?: boolean;
 };
 
 const cardClassName = "overflow-hidden rounded-xl border border-line bg-surface";
 
-export const NewsList = ({ stories, now, isSearching = false }: NewsListProps) => {
+const topicLabelOf = (story: NewsStory): string | undefined => {
+  const topic = classifyTopic(story.title);
+  return topic === null ? undefined : topicLabels[topic];
+};
+
+export const NewsList = ({ stories, now, isFiltering = false }: NewsListProps) => {
   if (stories.length === 0) {
     return (
       <div className={`${cardClassName} flex flex-col items-center gap-4 px-8 py-10 text-center`}>
@@ -24,11 +30,13 @@ export const NewsList = ({ stories, now, isSearching = false }: NewsListProps) =
         </span>
         <h3 className="font-heading text-xl font-bold text-ink">No encontramos novedades</h3>
         <p className="max-w-xs text-md text-muted">
-          {isSearching ? "Probá con otro término." : "Probá de nuevo en unos minutos."}
+          {isFiltering
+            ? "Probá con otro término o quitá algún filtro para ver más resultados."
+            : "Probá de nuevo en unos minutos."}
         </p>
-        {isSearching ? (
+        {isFiltering ? (
           <Link href="/" className="text-base font-semibold text-accent-text">
-            Limpiar búsqueda
+            Limpiar filtros
           </Link>
         ) : null}
       </div>
@@ -44,6 +52,7 @@ export const NewsList = ({ stories, now, isSearching = false }: NewsListProps) =
             sourceName={story.sourceName}
             title={story.title}
             href={story.url}
+            tag={topicLabelOf(story)}
             points={story.points}
             commentsCount={story.commentsCount}
             publishedAt={story.publishedAt}

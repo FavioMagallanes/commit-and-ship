@@ -54,6 +54,50 @@ describe("FeaturedStory", () => {
     );
   });
 
+  it("shows the topic pill right after the Destacado pill", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...story("top", 90), title: "A critical vulnerability in OpenSSH" },
+    ]);
+
+    render(await FeaturedStory({ loadStories, now: NOW }));
+
+    const topicPill = screen.getByText("Seguridad");
+    expect(screen.getByText("Destacado").nextElementSibling).toBe(topicPill);
+  });
+
+  it("shows no topic pill when the story has no topic", async () => {
+    loadStories.mockResolvedValueOnce([story("top", 90)]);
+
+    render(await FeaturedStory({ loadStories, now: NOW }));
+
+    expect(
+      screen.queryByText(/^(IA|Frontend|Backend|DevOps|Seguridad|Lenguajes)$/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("highlights the most upvoted story of the chosen topic", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...story("top", 900), title: "Triple-A Minesweeper" },
+      { ...story("rust", 50), title: "Rust 1.90 is out" },
+      { ...story("python", 10), title: "Python packaging" },
+    ]);
+
+    render(await FeaturedStory({ loadStories, now: NOW, topic: Promise.resolve("lenguajes") }));
+
+    expect(screen.getByRole("heading", { level: 2, name: "Rust 1.90 is out" })).toBeInTheDocument();
+    expect(screen.getByText("Lenguajes")).toBeInTheDocument();
+  });
+
+  it("renders nothing when no story has the chosen topic", async () => {
+    loadStories.mockResolvedValueOnce([story("top", 90)]);
+
+    const { container } = render(
+      await FeaturedStory({ loadStories, now: NOW, topic: Promise.resolve("ia") }),
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("renders nothing while searching", async () => {
     loadStories.mockResolvedValueOnce([story("top", 90)]);
 

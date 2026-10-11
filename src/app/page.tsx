@@ -12,6 +12,8 @@ import { SortSelect } from "@/features/news-feed/components/sort-select";
 import { ReleaseRadar } from "@/features/release-radar/components/release-radar";
 import { ReleaseRadarSkeleton } from "@/features/release-radar/components/release-radar-skeleton";
 import { loadFeedControls, loadSearchQuery } from "@/features/search-filters/model/search-params";
+import { TopicChips } from "@/features/topics/components/topic-chips";
+import { loadTopic } from "@/features/topics/model/topic-params";
 import { TrendingStories } from "@/features/trending/components/trending-stories";
 import { TrendingStoriesSkeleton } from "@/features/trending/components/trending-stories-skeleton";
 import { ACTIVE_SOURCES } from "@/shared/lib/active-sources";
@@ -24,6 +26,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
   const feedControls = loadFeedControls(searchParams);
   const sort = feedControls.then((controls) => controls.sort);
   const limit = feedControls.then((controls) => controls.limit);
+  const topic = loadTopic(searchParams);
 
   return (
     <main className="mx-auto flex max-w-[1200px] flex-col gap-12 px-6 pt-10 pb-12 md:pt-16">
@@ -43,6 +46,9 @@ export default function Home({ searchParams }: PageProps<"/">) {
           <Suspense fallback={<IntroStatsSkeleton />}>
             <IntroStats />
           </Suspense>
+          <Suspense>
+            <TopicChips />
+          </Suspense>
         </header>
         <Suspense fallback={<ActivityTerminalSkeleton />}>
           <ActivityTerminal />
@@ -51,7 +57,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-8">
           <Suspense fallback={<FeaturedStorySkeleton />}>
-            <FeaturedStory query={query} />
+            <FeaturedStory query={query} topic={topic} />
           </Suspense>
           <section aria-labelledby="latest-heading" className="flex flex-col gap-8">
             <div className="flex items-center justify-between gap-4">
@@ -63,7 +69,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
               </Suspense>
             </div>
             <Suspense fallback={<NewsFeedSkeleton />}>
-              <NewsFeed query={query} sort={sort} limit={limit} />
+              <NewsFeed query={query} sort={sort} limit={limit} topic={topic} />
             </Suspense>
           </section>
         </div>

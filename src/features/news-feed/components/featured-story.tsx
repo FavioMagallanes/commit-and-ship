@@ -1,9 +1,11 @@
 import { connection } from "next/server";
 
 import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { formatStoryMeta } from "@/features/news-feed/model/format-story-meta";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-story";
+import { classifyTopic, type Topic, topicLabels } from "@/features/topics/model/topics";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { ExternalLink } from "@/shared/ui/external-link";
 import { Icon } from "@/shared/ui/icon";
@@ -15,6 +17,8 @@ type FeaturedStoryProps = {
   now?: Date;
   /** Search text; the highlight is hidden while searching. */
   query?: Promise<string>;
+  /** Chosen topic; the highlight is the top story of that topic. */
+  topic?: Promise<Topic | null>;
 };
 
 const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {
@@ -29,11 +33,19 @@ export const FeaturedStory = async ({
   loadStories = getHackerNewsStories,
   now,
   query = Promise.resolve(""),
+  topic = Promise.resolve(null),
 }: FeaturedStoryProps) => {
-  const [stories, searchText] = await Promise.all([loadOrNull(loadStories), query]);
+  const [stories, searchText, selectedTopic] = await Promise.all([
+    loadOrNull(loadStories),
+    query,
+    topic,
+  ]);
   // The list below already reports a failing source, so there is nothing to show here.
-  const featured = stories === null ? null : pickFeaturedStory(stories, searchText);
+  const featured =
+    stories === null ? null : pickFeaturedStory(filterByTopic(stories, selectedTopic), searchText);
   if (featured === null) return null;
+
+  const featuredTopic = classifyTopic(featured.title);
 
   // Relative times depend on the clock, so this renders per request (the data stays cached).
   if (!now) await connection();
@@ -41,9 +53,10 @@ export const FeaturedStory = async ({
 
   return (
     <article className="flex flex-col gap-6 rounded-xl border border-line bg-surface p-6 md:p-8">
-      <Pill tone="solid" className="self-start">
-        Destacado
-      </Pill>
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill tone="solid">Destacado</Pill>
+        {featuredTopic === null ? null : <Pill tone="accent">{topicLabels[featuredTopic]}</Pill>}
+      </div>
       <h2 className="font-heading text-2xl leading-tight font-extrabold text-ink md:text-3xl">
         <ExternalLink href={featured.url}>{featured.title}</ExternalLink>
       </h2>

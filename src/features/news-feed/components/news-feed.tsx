@@ -1,11 +1,13 @@
 import { connection } from "next/server";
 
 import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { filterStories } from "@/features/news-feed/model/filter-stories";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { paginateStories } from "@/features/news-feed/model/paginate-stories";
 import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-story";
 import { type SortOrder, sortStories } from "@/features/news-feed/model/sort-stories";
+import type { Topic } from "@/features/topics/model/topics";
 import { ErrorBanner } from "@/shared/ui/error-banner";
 
 import { LoadMoreButton } from "./load-more-button";
@@ -20,6 +22,8 @@ type NewsFeedProps = {
   sort?: Promise<SortOrder>;
   /** How many stories the list shows; resolves from the url on the server. */
   limit?: Promise<number>;
+  /** Chosen topic; resolves from the url on the server. */
+  topic?: Promise<Topic | null>;
 };
 
 const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {
@@ -36,17 +40,19 @@ export const NewsFeed = async ({
   query = Promise.resolve(""),
   sort = Promise.resolve("recent"),
   limit = Promise.resolve(10),
+  topic = Promise.resolve(null),
 }: NewsFeedProps) => {
-  const [stories, searchText, order, pageLimit] = await Promise.all([
+  const [loaded, searchText, order, pageLimit, selectedTopic] = await Promise.all([
     loadOrNull(loadStories),
     query,
     sort,
     limit,
+    topic,
   ]);
   // Relative times depend on the current time, so this renders per request (the data stays cached).
   if (!now) await connection();
 
-  if (stories === null) {
+  if (loaded === null) {
     return (
       <ErrorBanner title="No pudimos cargar Hacker News">
         El resto de las fuentes funciona con normalidad.
@@ -54,6 +60,8 @@ export const NewsFeed = async ({
     );
   }
 
+  // The topic narrows every story first, so the featured one and the list both respect it.
+  const stories = filterByTopic(loaded, selectedTopic);
   // The featured story has its own card above the list, so the list leaves it out, unless it is
   // the only story: an empty list would wrongly say there is nothing to show.
   const featured = stories.length > 1 ? pickFeaturedStory(stories, searchText) : null;
@@ -62,7 +70,11 @@ export const NewsFeed = async ({
 
   return (
     <>
-      <NewsList stories={visible} now={now ?? new Date()} isSearching={searchText.trim() !== ""} />
+      <NewsList
+        stories={visible}
+        now={now ?? new Date()}
+        isFiltering={searchText.trim() !== "" || selectedTopic !== null}
+      />
       {hasMore ? (
         <div className="flex justify-center">
           <LoadMoreButton nextLimit={nextLimit} />
