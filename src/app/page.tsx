@@ -23,9 +23,13 @@ import { TrendingStories } from "@/features/trending/components/trending-stories
 import { TrendingStoriesSkeleton } from "@/features/trending/components/trending-stories-skeleton";
 import { ACTIVE_SOURCES } from "@/shared/lib/active-sources";
 
-const sourcesLabel = new Intl.ListFormat("es", { type: "conjunction" }).format(
-  ACTIVE_SOURCES.map((source) => source.name),
-);
+const listSourceNames = (kind: (typeof ACTIVE_SOURCES)[number]["kind"]) =>
+  new Intl.ListFormat("es", { type: "conjunction" }).format(
+    ACTIVE_SOURCES.filter((source) => source.kind === kind).map((source) => source.name),
+  );
+
+const feedSourcesLabel = listSourceNames("feed");
+const conversationSourcesLabel = listSourceNames("conversation");
 
 export default function Home({ searchParams }: PageProps<"/">) {
   // Not awaited here: each block reads the query inside its own Suspense boundary.
@@ -47,12 +51,13 @@ export default function Home({ searchParams }: PageProps<"/">) {
             Novedades tech, sin ruido.
           </h1>
           <p className="max-w-xl text-lg text-muted">
+            {/* Small screens have no conversation card, so their copy names only the feed. */}
             <span className="md:hidden">
-              Lo que publican {sourcesLabel}, ordenado por hora. Sin cuentas ni algoritmos.
+              Lo que publican {feedSourcesLabel}, ordenado por hora. Sin cuentas ni algoritmos.
             </span>
             <span className="hidden md:inline">
-              Reunimos en un solo lugar lo que publican {sourcesLabel}, ordenado por hora. Sin
-              cuentas ni algoritmos.
+              Reunimos en un solo lugar lo que publican {feedSourcesLabel} y lo que se conversa en{" "}
+              {conversationSourcesLabel}, ordenado por hora. Sin cuentas ni algoritmos.
             </span>
           </p>
           <Suspense fallback={<IntroStatsSkeleton />}>
