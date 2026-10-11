@@ -7,10 +7,11 @@ const story = (
   id: string,
   points: number,
   publishedAt = "2026-10-10T10:00:00.000Z",
+  source: NewsStory["source"] = "hn",
 ): NewsStory => ({
   id,
-  source: "hn",
-  sourceName: "Hacker News",
+  source,
+  sourceName: source,
   title: `Story ${id}`,
   url: "https://example.com",
   publishedAt,
@@ -32,6 +33,22 @@ describe("pickFeaturedStory", () => {
     ];
 
     expect(pickFeaturedStory(stories, "")?.id).toBe("new");
+  });
+
+  it("picks the most voted of the top stories of each source in a mixed list", () => {
+    const stories = [
+      story("dev-top", 40, "2026-10-10T12:00:00.000Z", "dev"),
+      story("hn-low", 100),
+      story("hn-top", 900, "2026-10-09T10:00:00.000Z"),
+    ];
+
+    expect(pickFeaturedStory(stories, "")?.id).toBe("hn-top");
+  });
+
+  it("picks a source's top story when other sources have no points", () => {
+    const stories = [story("hn-zero", 0), story("dev-low", 3, undefined, "dev")];
+
+    expect(pickFeaturedStory(stories, "")?.id).toBe("dev-low");
   });
 
   it("picks nothing while the user is searching", () => {

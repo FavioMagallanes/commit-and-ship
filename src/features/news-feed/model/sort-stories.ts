@@ -1,4 +1,5 @@
 import type { NewsStory } from "@/features/news-feed/model/news-story";
+import { popularityScores } from "@/features/news-feed/model/popularity-score";
 import type { SortOrder } from "@/features/search-filters/model/search-params";
 
 export type { SortOrder };
@@ -16,11 +17,15 @@ const byNewest = (a: NewsStory, b: NewsStory) => {
   return timeA > timeB ? -1 : 1;
 };
 
-const comparators: Record<SortOrder, (a: NewsStory, b: NewsStory) => number> = {
-  recent: byNewest,
-  popular: (a, b) => b.points - a.points || byNewest(a, b),
+const byPopularity = (stories: NewsStory[]) => {
+  const scores = popularityScores(stories);
+  return (a: NewsStory, b: NewsStory) =>
+    (scores.get(b) ?? 0) - (scores.get(a) ?? 0) || b.points - a.points || byNewest(a, b);
 };
 
-/** A sorted copy: newest first for `recent`, most points first (newest on ties) for `popular`. */
+/**
+ * A sorted copy: newest first for `recent`; for `popular`, highest popularity within its own
+ * source first, then more points, then newest.
+ */
 export const sortStories = (stories: NewsStory[], order: SortOrder): NewsStory[] =>
-  stories.toSorted(comparators[order]);
+  stories.toSorted(order === "popular" ? byPopularity(stories) : byNewest);
