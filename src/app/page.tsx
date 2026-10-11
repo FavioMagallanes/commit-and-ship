@@ -2,6 +2,8 @@ import { Suspense } from "react";
 
 import { ActivityTerminal } from "@/features/activity-log/components/activity-terminal";
 import { ActivityTerminalSkeleton } from "@/features/activity-log/components/activity-terminal-skeleton";
+import { Conversation } from "@/features/conversation/components/conversation";
+import { ConversationSkeleton } from "@/features/conversation/components/conversation-skeleton";
 import { FeaturedStory } from "@/features/news-feed/components/featured-story";
 import { FeaturedStorySkeleton } from "@/features/news-feed/components/featured-story-skeleton";
 import { IntroStats } from "@/features/news-feed/components/intro-stats";
@@ -90,6 +92,11 @@ export default function Home({ searchParams }: PageProps<"/">) {
           <div className="hidden lg:block">
             <Suspense fallback={<TrendingStoriesSkeleton />}>
               <TrendingStories />
+            </Suspense>
+          </div>
+          <div className="hidden lg:block">
+            <Suspense fallback={<ConversationSkeleton />}>
+              <Conversation />
             </Suspense>
           </div>
         </aside>

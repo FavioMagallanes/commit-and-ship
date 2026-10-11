@@ -20,12 +20,12 @@ describe("Home page", () => {
 
     expect(
       screen.getByText(
-        "Lo que publican Hacker News, GitHub y dev.to, ordenado por hora. Sin cuentas ni algoritmos.",
+        "Lo que publican Hacker News, GitHub, dev.to y Mastodon, ordenado por hora. Sin cuentas ni algoritmos.",
       ),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Reunimos en un solo lugar lo que publican Hacker News, GitHub y dev.to, ordenado por hora. Sin cuentas ni algoritmos.",
+        "Reunimos en un solo lugar lo que publican Hacker News, GitHub, dev.to y Mastodon, ordenado por hora. Sin cuentas ni algoritmos.",
       ),
     ).toBeInTheDocument();
   });
@@ -48,6 +48,21 @@ describe("Home page", () => {
       within(sidebar).getByRole("status", { name: "Cargando radar de versiones" }),
     ).toBeInTheDocument();
     expect(sidebar.compareDocumentPosition(latest) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("places the conversations under the most discussed stories, only from lg up", () => {
+    render(<Home {...props} />, { wrapper: withNuqsTestingAdapter() });
+
+    const sidebar = screen.getByRole("complementary", { name: "Barra lateral" });
+    const trending = within(sidebar).getByRole("status", { name: "Cargando lo más hablado" });
+    const conversation = within(sidebar).getByRole("status", {
+      name: "Cargando conversaciones",
+    });
+
+    expect(conversation.closest(".hidden.lg\\:block")).not.toBeNull();
+    expect(
+      trending.compareDocumentPosition(conversation) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it("offers the topic filter in the intro", () => {

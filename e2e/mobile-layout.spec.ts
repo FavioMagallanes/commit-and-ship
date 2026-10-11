@@ -32,6 +32,7 @@ test.describe("home layout", () => {
       expect((await boxOf(radar)).y).toBeLessThan((await boxOf(latestHeading)).y);
 
       await expect(page.getByText("Lo más hablado hoy")).toBeHidden();
+      await expect(page.getByText("En conversación")).toBeHidden();
       await expect(page.getByRole("list", { name: "Estadísticas" })).toBeHidden();
       expect(await hasHorizontalOverflow(page)).toBe(false);
     });
@@ -50,6 +51,7 @@ test.describe("home layout", () => {
       expect((await boxOf(radar)).x).toBeGreaterThan((await boxOf(latestHeading)).x);
 
       await expect(page.getByRole("region", { name: "Lo más hablado hoy" })).toBeVisible();
+      await expect(page.getByRole("region", { name: "En conversación" })).toBeVisible();
       expect(await hasHorizontalOverflow(page)).toBe(false);
     });
   });

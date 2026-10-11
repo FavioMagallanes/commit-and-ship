@@ -96,6 +96,7 @@ Se implementan con React, `cva` y `cn`. Cada uno nace de un componente de Penpot
 - Home claro (1440 px), Home oscuro y Home móvil (390 px).
 - Estructura de la home: navegación (logo, búsqueda con Ctrl K, Fuentes, toggle de tema), introducción (eyebrow, título, estadísticas, chips de temas), noticia destacada, lista "Más recientes" con "Cargar más novedades", barra lateral (Radar de versiones, Lo más hablado hoy, En conversación) y footer.
 - El Radar de versiones muestra las 6 más recientes en escritorio y 4 en móvil; su Card Header "Con enlace" ("Ver todo" en `accent-text` con `arrow-right`) lleva a la pantalla Versiones.
+- En conversación (solo escritorio, oculta en móvil como Lo más hablado hoy): 3 posts de Mastodon con Post Row; avatar redondo con la inicial del handle (sin imágenes remotas), handle en negrita, "· Mastodon" en `faint` y el texto en `muted`, hasta 3 líneas, enlazado al post original.
 - Versiones (`/releases`), aún no está en Penpot: enlace "Volver al inicio" en `accent-text`, título, introducción y todas las versiones con Radar Row dentro de una tarjeta, de la más reciente a la más antigua.
 - Estados: cargando (skeleton), vacío (icono `search-x`) y error de fuente (banner de error con contenido en caché).
 

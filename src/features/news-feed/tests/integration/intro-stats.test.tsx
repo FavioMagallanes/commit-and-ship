@@ -36,7 +36,7 @@ describe("IntroStats", () => {
     render(await IntroStats({ loadSnapshot, now: NOW }));
 
     expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual([
-      "3 fuentes",
+      "4 fuentes",
       "2 novedades hoy",
       "12 min desde la última actualización",
     ]);
@@ -57,6 +57,6 @@ describe("IntroStats", () => {
 
     render(await IntroStats({ loadSnapshot, now: NOW }));
 
-    expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual(["3 fuentes"]);
+    expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual(["4 fuentes"]);
   });
 });

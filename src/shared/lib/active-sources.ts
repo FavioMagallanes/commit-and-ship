@@ -8,4 +8,5 @@ export const ACTIVE_SOURCES: ActiveSource[] = [
   { name: "Hacker News", url: "https://news.ycombinator.com" },
   { name: "GitHub", url: "https://github.com" },
   { name: "dev.to", url: "https://dev.to" },
+  { name: "Mastodon", url: "https://mastodon.social" },
 ];
