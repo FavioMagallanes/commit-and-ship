@@ -1,3 +1,4 @@
+import { cn } from "@/shared/lib/cn";
 import { ExternalLink } from "@/shared/ui/external-link";
 import { Pill } from "@/shared/ui/pill";
 
@@ -8,6 +9,7 @@ type RadarRowProps = {
   publishedAt: string;
   publishedLabel: string;
   isNew?: boolean;
+  className?: string;
 };
 
 export const RadarRow = ({
@@ -17,8 +19,9 @@ export const RadarRow = ({
   publishedAt,
   publishedLabel,
   isNew = false,
+  className,
 }: RadarRowProps) => (
-  <li className="flex items-center justify-between leading-tight">
+  <li className={cn("flex items-center justify-between leading-tight", className)}>
     <div className="flex flex-col gap-1">
       <ExternalLink href={href} className="text-md font-semibold text-ink">
         {name}

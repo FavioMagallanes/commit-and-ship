@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { cn } from "@/shared/lib/cn";
 import { Icon } from "@/shared/ui/icon";
 
@@ -21,13 +23,13 @@ export const CardHeader = ({
       {title}
     </h2>
     {href ? (
-      <a
+      <Link
         href={href}
         className="inline-flex items-center gap-1 text-sm font-semibold text-accent-text"
       >
         {linkLabel}
         <Icon name="arrow-right" />
-      </a>
+      </Link>
     ) : null}
   </div>
 );

@@ -68,6 +68,36 @@ describe("ReleaseRadar", () => {
     expect(screen.getByRole("link", { name: "React" })).toBeInTheDocument();
   });
 
+  it("links to the full list of releases", async () => {
+    loadReleases.mockResolvedValueOnce([release()]);
+
+    render(await ReleaseRadar({ loadReleases, now: NOW }));
+
+    expect(screen.getByRole("link", { name: "Ver todo" })).toHaveAttribute("href", "/releases");
+  });
+
+  it("shows at most the six most recent releases, and four below md", async () => {
+    loadReleases.mockResolvedValueOnce(
+      Array.from({ length: 8 }, (_, index) =>
+        release({
+          repo: `owner/repo-${index}`,
+          name: `Repo ${index}`,
+          publishedAt: `2026-10-0${index + 1}T12:00:00.000Z`,
+        }),
+      ),
+    );
+
+    render(await ReleaseRadar({ loadReleases, now: NOW }));
+
+    const rows = screen.getAllByRole("listitem");
+    expect(rows).toHaveLength(6);
+    expect(within(rows[0]).getByRole("link")).toHaveAccessibleName("Repo 7");
+    expect(within(rows[5]).getByRole("link")).toHaveAccessibleName("Repo 2");
+    expect(rows[3]).not.toHaveClass("max-md:hidden");
+    expect(rows[4]).toHaveClass("max-md:hidden");
+    expect(rows[5]).toHaveClass("max-md:hidden");
+  });
+
   it("says so when no release matches the search", async () => {
     loadReleases.mockResolvedValueOnce([release()]);
 
