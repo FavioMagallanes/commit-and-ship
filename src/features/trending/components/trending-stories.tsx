@@ -1,8 +1,10 @@
+import { retryNews } from "@/features/news-feed/actions/retry-news";
 import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { rankStories } from "@/features/news-feed/model/rank-stories";
 import { CardHeader } from "@/shared/ui/card-header";
 import { ErrorBanner } from "@/shared/ui/error-banner";
+import { RetryButton } from "@/shared/ui/retry-button";
 
 import { RankingRow } from "./ranking-row";
 
@@ -28,7 +30,10 @@ export const TrendingStories = async ({ loadStories = getNewsStories }: Trending
     >
       <CardHeader id="trending-heading" title="Lo más hablado hoy" />
       {stories === null ? (
-        <ErrorBanner title="No pudimos cargar lo más hablado">
+        <ErrorBanner
+          title="No pudimos cargar lo más hablado"
+          action={<RetryButton action={retryNews} />}
+        >
           El resto de las fuentes funciona con normalidad.
         </ErrorBanner>
       ) : (

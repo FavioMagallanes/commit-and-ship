@@ -55,6 +55,9 @@ describe("Conversation", () => {
     expect(screen.getByRole("alert")).toHaveTextContent(
       "El resto de las fuentes funciona con normalidad.",
     );
+    expect(screen.getByRole("alert")).toContainElement(
+      screen.getByRole("button", { name: "Reintentar" }),
+    );
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
 

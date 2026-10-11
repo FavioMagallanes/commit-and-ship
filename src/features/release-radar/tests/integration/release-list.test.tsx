@@ -65,6 +65,9 @@ describe("ReleaseList", () => {
     render(await ReleaseList({ loadReleases, now: NOW }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar las versiones");
+    expect(screen.getByRole("alert")).toContainElement(
+      screen.getByRole("button", { name: "Reintentar" }),
+    );
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
   });
 

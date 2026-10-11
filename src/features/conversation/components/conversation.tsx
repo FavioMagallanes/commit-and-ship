@@ -1,10 +1,12 @@
 import { connection } from "next/server";
 
+import { retryConversation } from "@/features/conversation/actions/retry-conversation";
 import { getConversationStatuses } from "@/features/conversation/api/get-conversation-statuses";
 import type { MastodonStatus } from "@/features/conversation/model/mastodon-status";
 import { pickConversations } from "@/features/conversation/model/pick-conversations";
 import { CardHeader } from "@/shared/ui/card-header";
 import { ErrorBanner } from "@/shared/ui/error-banner";
+import { RetryButton } from "@/shared/ui/retry-button";
 
 import { PostRow } from "./post-row";
 
@@ -38,7 +40,10 @@ export const Conversation = async ({
     >
       <CardHeader id="conversation-heading" title="En conversación" />
       {posts === null ? (
-        <ErrorBanner title="No pudimos cargar las conversaciones">
+        <ErrorBanner
+          title="No pudimos cargar las conversaciones"
+          action={<RetryButton action={retryConversation} />}
+        >
           El resto de las fuentes funciona con normalidad.
         </ErrorBanner>
       ) : posts.length === 0 ? (

@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 
+import { retryReleases } from "@/features/release-radar/actions/retry-releases";
 import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
 import { filterReleases } from "@/features/release-radar/model/filter-releases";
 import { isRecentRelease } from "@/features/release-radar/model/is-recent-release";
@@ -8,6 +9,7 @@ import { sortReleasesByDate } from "@/features/release-radar/model/sort-releases
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { CardHeader } from "@/shared/ui/card-header";
 import { ErrorBanner } from "@/shared/ui/error-banner";
+import { RetryButton } from "@/shared/ui/retry-button";
 
 import { RadarRow } from "./radar-row";
 
@@ -51,7 +53,10 @@ export const ReleaseRadar = async ({
     >
       <CardHeader id="release-radar-heading" title="Radar de versiones" href="/releases" />
       {visibleReleases === null ? (
-        <ErrorBanner title="No pudimos cargar el radar de versiones">
+        <ErrorBanner
+          title="No pudimos cargar el radar de versiones"
+          action={<RetryButton action={retryReleases} />}
+        >
           El resto de las fuentes funciona con normalidad.
         </ErrorBanner>
       ) : visibleReleases.length === 0 ? (

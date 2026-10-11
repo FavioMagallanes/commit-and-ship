@@ -1,11 +1,13 @@
 import { connection } from "next/server";
 
+import { retryReleases } from "@/features/release-radar/actions/retry-releases";
 import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
 import { isRecentRelease } from "@/features/release-radar/model/is-recent-release";
 import type { Release } from "@/features/release-radar/model/release";
 import { sortReleasesByDate } from "@/features/release-radar/model/sort-releases";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { ErrorBanner } from "@/shared/ui/error-banner";
+import { RetryButton } from "@/shared/ui/retry-button";
 
 import { RadarRow } from "./radar-row";
 
@@ -31,7 +33,10 @@ export const ReleaseList = async ({ loadReleases = getLatestReleases, now }: Rel
 
   if (releases === null) {
     return (
-      <ErrorBanner title="No pudimos cargar las versiones">
+      <ErrorBanner
+        title="No pudimos cargar las versiones"
+        action={<RetryButton action={retryReleases} />}
+      >
         Probá de nuevo en unos minutos.
       </ErrorBanner>
     );

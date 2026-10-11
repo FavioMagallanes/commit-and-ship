@@ -53,6 +53,9 @@ describe("ReleaseRadar", () => {
     render(await ReleaseRadar({ loadReleases, now: NOW }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar el radar de versiones");
+    expect(screen.getByRole("alert")).toContainElement(
+      screen.getByRole("button", { name: "Reintentar" }),
+    );
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
 

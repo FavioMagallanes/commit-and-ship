@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 
+import { retryNews } from "@/features/news-feed/actions/retry-news";
 import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { filterStories } from "@/features/news-feed/model/filter-stories";
@@ -9,6 +10,7 @@ import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-stor
 import { type SortOrder, sortStories } from "@/features/news-feed/model/sort-stories";
 import type { Topic } from "@/features/topics/model/topics";
 import { ErrorBanner } from "@/shared/ui/error-banner";
+import { RetryButton } from "@/shared/ui/retry-button";
 
 import { LoadMoreButton } from "./load-more-button";
 import { NewsList } from "./news-list";
@@ -54,7 +56,10 @@ export const NewsFeed = async ({
 
   if (loaded === null) {
     return (
-      <ErrorBanner title="No pudimos cargar las noticias">
+      <ErrorBanner
+        title="No pudimos cargar las noticias"
+        action={<RetryButton action={retryNews} />}
+      >
         El resto de las fuentes funciona con normalidad.
       </ErrorBanner>
     );

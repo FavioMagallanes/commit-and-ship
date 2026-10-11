@@ -39,6 +39,9 @@ describe("TrendingStories", () => {
     render(await TrendingStories({ loadStories }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar lo más hablado");
+    expect(
+      within(screen.getByRole("alert")).getByRole("button", { name: "Reintentar" }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
 });
