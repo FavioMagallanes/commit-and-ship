@@ -59,6 +59,7 @@ Pesos disponibles: 400 a 800. La escala reemplaza a la de Tailwind; `md` es un t
 - Espaciado: paso de 4 px de Tailwind. Los tokens de Penpot 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80 y 96 equivalen a `1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24`.
 - Radios: `sm` 8, `md` 12, `lg` 16, `xl` 20, `full` 999 px.
 - Bordes de 1 px con `line`.
+- Contenido de 1200 px de ancho en escritorio (contenedor de 1248 px con 24 px de padding lateral); separación de 72 px entre la introducción y el contenido principal.
 
 ## Iconos
 

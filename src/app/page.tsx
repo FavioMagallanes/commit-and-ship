@@ -34,7 +34,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
   const topic = loadTopic(searchParams);
 
   return (
-    <main className="mx-auto flex max-w-[1200px] flex-col gap-12 px-6 pt-10 pb-12 md:pt-16">
+    <main className="mx-auto flex max-w-[1248px] flex-col gap-12 px-6 pt-10 pb-12 md:pt-16 lg:gap-18">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center">
         <header className="flex flex-col gap-6">
           <p className="flex items-center gap-2 text-xs font-bold tracking-widest text-accent-text uppercase">

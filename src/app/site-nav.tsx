@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/features/theme/components/theme-toggle";
 import { SourcesMenu } from "@/shared/ui/sources-menu";
 
 export const SiteNav = () => (
-  <header className="mx-auto flex max-w-[1200px] flex-nowrap items-center justify-between gap-4 px-6 py-4 md:h-19 md:py-0">
+  <header className="mx-auto flex max-w-[1248px] flex-nowrap items-center justify-between gap-4 px-6 py-4 md:h-19 md:py-0">
     <Link
       href="/"
       aria-label="Commit & Ship, ir al inicio"
