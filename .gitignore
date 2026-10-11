@@ -49,3 +49,6 @@ next-env.d.ts
 # brand logo originals (large; icons already generated in src/app)
 /public/logo.png
 /public/logo_2.png
+
+# ODD working documents (tasks, decisions) stay out of the repo
+/odd/
