@@ -19,6 +19,6 @@ describe("SiteFooter", () => {
   it("lists only the sources that are actually aggregated", () => {
     render(<SiteFooter />);
 
-    expect(screen.getByText("Fuentes: Hacker News · GitHub")).toBeInTheDocument();
+    expect(screen.getByText("Fuentes: Hacker News · GitHub · dev.to")).toBeInTheDocument();
   });
 });

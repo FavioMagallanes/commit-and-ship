@@ -188,3 +188,35 @@ export const classifyTopic = (title: string): Topic | null => {
   );
   return match ? match[0] : null;
 };
+
+// dev.to tags are single lowercase words. Same priority as the title keywords.
+const topicTags: ReadonlyArray<readonly [Topic, ReadonlySet<string>]> = [
+  ["seguridad", new Set(["security", "cybersecurity", "infosec", "privacy"])],
+  ["ia", new Set(["ai", "machinelearning", "deeplearning", "llm", "genai", "openai", "chatgpt"])],
+  [
+    "lenguajes",
+    new Set(["python", "rust", "go", "golang", "java", "kotlin", "swift", "cpp", "csharp"]),
+  ],
+  [
+    "frontend",
+    new Set(["webdev", "javascript", "react", "vue", "svelte", "angular", "css", "html"]),
+  ],
+  ["backend", new Set(["backend", "database", "api", "node", "postgres", "sql", "graphql"])],
+  ["devops", new Set(["devops", "docker", "kubernetes", "aws", "cloud", "linux", "terraform"])],
+];
+
+/** The topic of a set of tags, or null when none of them is known. */
+export const classifyTags = (tags: readonly string[]): Topic | null => {
+  const normalized = tags.map((tag) => normalizeText(tag).trim());
+  const match = topicTags.find(([, known]) => normalized.some((tag) => known.has(tag)));
+  return match ? match[0] : null;
+};
+
+/** The topic of a story: its title decides first, its tags only when the title says nothing. */
+export const classifyStoryTopic = ({
+  title,
+  tags = [],
+}: {
+  title: string;
+  tags?: readonly string[];
+}): Topic | null => classifyTopic(title) ?? classifyTags(tags);

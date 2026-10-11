@@ -32,6 +32,17 @@ describe("filterByTopic", () => {
     expect(filterByTopic(stories, "devops")).toEqual([]);
   });
 
+  it("finds a story by the topic of its tags when the title names none", () => {
+    const devToStory: NewsStory = {
+      ...story("5", "Ten lessons from my first year"),
+      source: "dev",
+      sourceName: "dev.to",
+      tags: ["docker"],
+    };
+
+    expect(filterByTopic([...stories, devToStory], "devops").map((item) => item.id)).toEqual(["5"]);
+  });
+
   it("does not mutate the given stories", () => {
     const copy = structuredClone(stories);
 

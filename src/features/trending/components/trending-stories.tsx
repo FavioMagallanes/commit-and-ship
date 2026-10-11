@@ -1,4 +1,4 @@
-import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { rankStories } from "@/features/news-feed/model/rank-stories";
 import { CardHeader } from "@/shared/ui/card-header";
@@ -18,9 +18,7 @@ const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {
   }
 };
 
-export const TrendingStories = async ({
-  loadStories = getHackerNewsStories,
-}: TrendingStoriesProps) => {
+export const TrendingStories = async ({ loadStories = getNewsStories }: TrendingStoriesProps) => {
   const stories = await loadOrNull(loadStories);
 
   return (

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import type { NewsStory } from "@/features/news-feed/model/news-story";
-import { classifyTopic, topicLabels } from "@/features/topics/model/topics";
+import { classifyStoryTopic, topicLabels } from "@/features/topics/model/topics";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { Icon } from "@/shared/ui/icon";
 
@@ -17,7 +17,7 @@ type NewsListProps = {
 const cardClassName = "overflow-hidden rounded-xl border border-line bg-surface";
 
 const topicLabelOf = (story: NewsStory): string | undefined => {
-  const topic = classifyTopic(story.title);
+  const topic = classifyStoryTopic(story);
   return topic === null ? undefined : topicLabels[topic];
 };
 

@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 
-import { getHackerNewsSnapshot } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import type { NewsSnapshot } from "@/features/news-feed/model/news-story";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 
@@ -19,7 +19,7 @@ const loadOrNull = async (loadSnapshot: () => Promise<NewsSnapshot>) => {
 
 /** Mobile replacement for the intro stats: a single line with the last update. */
 export const UpdatedStatus = async ({
-  loadSnapshot = getHackerNewsSnapshot,
+  loadSnapshot = getNewsSnapshot,
   now,
 }: UpdatedStatusProps) => {
   const snapshot = await loadOrNull(loadSnapshot);

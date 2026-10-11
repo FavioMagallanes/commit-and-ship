@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 
-import { getHackerNewsSnapshot } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import { countRecentStories } from "@/features/news-feed/model/count-recent-stories";
 import type { NewsSnapshot } from "@/features/news-feed/model/news-story";
 import { ACTIVE_SOURCES } from "@/shared/lib/active-sources";
@@ -26,10 +26,7 @@ const Stat = ({ value, label }: { value: number | string; label: string }) => (
   </li>
 );
 
-export const IntroStats = async ({
-  loadSnapshot = getHackerNewsSnapshot,
-  now,
-}: IntroStatsProps) => {
+export const IntroStats = async ({ loadSnapshot = getNewsSnapshot, now }: IntroStatsProps) => {
   const snapshot = await loadOrNull(loadSnapshot);
   // "Today" and "since the last update" depend on the clock, so this renders per request.
   if (!now) await connection();

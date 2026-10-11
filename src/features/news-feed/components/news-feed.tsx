@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 
-import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { filterStories } from "@/features/news-feed/model/filter-stories";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
@@ -35,7 +35,7 @@ const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {
 };
 
 export const NewsFeed = async ({
-  loadStories = getHackerNewsStories,
+  loadStories = getNewsStories,
   now,
   query = Promise.resolve(""),
   sort = Promise.resolve("recent"),
@@ -54,7 +54,7 @@ export const NewsFeed = async ({
 
   if (loaded === null) {
     return (
-      <ErrorBanner title="No pudimos cargar Hacker News">
+      <ErrorBanner title="No pudimos cargar las noticias">
         El resto de las fuentes funciona con normalidad.
       </ErrorBanner>
     );

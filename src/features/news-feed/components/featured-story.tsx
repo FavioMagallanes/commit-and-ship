@@ -1,11 +1,11 @@
 import { connection } from "next/server";
 
-import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { formatStoryMeta } from "@/features/news-feed/model/format-story-meta";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-story";
-import { classifyTopic, type Topic, topicLabels } from "@/features/topics/model/topics";
+import { classifyStoryTopic, type Topic, topicLabels } from "@/features/topics/model/topics";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { ExternalLink } from "@/shared/ui/external-link";
 import { Icon } from "@/shared/ui/icon";
@@ -30,7 +30,7 @@ const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {
 };
 
 export const FeaturedStory = async ({
-  loadStories = getHackerNewsStories,
+  loadStories = getNewsStories,
   now,
   query = Promise.resolve(""),
   topic = Promise.resolve(null),
@@ -45,7 +45,7 @@ export const FeaturedStory = async ({
     stories === null ? null : pickFeaturedStory(filterByTopic(stories, selectedTopic), searchText);
   if (featured === null) return null;
 
-  const featuredTopic = classifyTopic(featured.title);
+  const featuredTopic = classifyStoryTopic(featured);
 
   // Relative times depend on the clock, so this renders per request (the data stays cached).
   if (!now) await connection();

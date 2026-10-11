@@ -49,6 +49,16 @@ describe("buildActivityLog", () => {
     expect(log.map((entry) => entry.source)).toEqual(["HN", "GH"]);
   });
 
+  it("tags dev.to stories as DEV", () => {
+    const devToStory: NewsStory = {
+      ...story("devto-1", "A dev.to article", "2026-10-10T11:00:00Z"),
+      source: "dev",
+      sourceName: "dev.to",
+    };
+
+    expect(buildActivityLog([devToStory], []).map((entry) => entry.source)).toEqual(["DEV"]);
+  });
+
   it("keeps only the most recent entries", () => {
     const stories = Array.from({ length: 10 }, (_, index) =>
       story(`s${index}`, `Story ${index}`, `2026-10-10T0${index}:00:00Z`),

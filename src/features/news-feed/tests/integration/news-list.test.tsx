@@ -37,6 +37,17 @@ describe("NewsList", () => {
     expect(screen.getByText("hace 3 h")).toHaveAttribute("datetime", "2026-10-10T15:30:00.000Z");
   });
 
+  it("labels a story by its tags when the title names no topic", () => {
+    render(
+      <NewsList
+        now={NOW}
+        stories={[story({ id: "devto-1", source: "dev", sourceName: "dev.to", tags: ["docker"] })]}
+      />,
+    );
+
+    expect(screen.getByText("DevOps")).toBeInTheDocument();
+  });
+
   it("shows an empty state instead of an empty list", () => {
     render(<NewsList now={NOW} stories={[]} />);
 

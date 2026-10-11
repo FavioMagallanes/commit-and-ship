@@ -4,7 +4,7 @@ import type { Release } from "@/features/release-radar/model/release";
 const LOG_SIZE = 4;
 
 export type ActivityEntry = {
-  source: "HN" | "GH";
+  source: "HN" | "DEV" | "GH";
   text: string;
   /** ISO 8601 instant in UTC. */
   publishedAt: string;
@@ -16,7 +16,7 @@ const isValidInstant = (isoInstant: string) => !Number.isNaN(new Date(isoInstant
 export const buildActivityLog = (stories: NewsStory[], releases: Release[]): ActivityEntry[] =>
   [
     ...stories.map((story): ActivityEntry => ({
-      source: "HN",
+      source: story.source === "dev" ? "DEV" : "HN",
       text: story.title,
       publishedAt: story.publishedAt,
     })),

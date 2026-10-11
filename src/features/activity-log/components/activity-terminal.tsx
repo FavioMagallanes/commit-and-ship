@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 
 import { buildActivityLog } from "@/features/activity-log/model/build-activity-log";
-import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-stories";
+import { getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
 import type { Release } from "@/features/release-radar/model/release";
@@ -29,7 +29,7 @@ const Dot = () => <span className="size-2.5 rounded-full bg-terminal-muted/40" /
 
 /** Decorative panel: the same events the page lists, written as a log. */
 export const ActivityTerminal = async ({
-  loadStories = getHackerNewsStories,
+  loadStories = getNewsStories,
   loadReleases = getLatestReleases,
   now,
 }: ActivityTerminalProps) => {

@@ -61,7 +61,7 @@ describe("NewsFeed", () => {
 
     render(await NewsFeed({ loadStories, now: new Date("2026-10-10T18:30:00Z") }));
 
-    expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar Hacker News");
+    expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar las noticias");
     expect(screen.getByRole("alert")).toHaveTextContent(
       "El resto de las fuentes funciona con normalidad.",
     );

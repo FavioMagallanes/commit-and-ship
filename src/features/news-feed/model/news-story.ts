@@ -13,6 +13,8 @@ export type NewsStory = {
   publishedAt: string;
   points: number;
   commentsCount: number;
+  /** Tags chosen by the author, when the source has them (dev.to does, Hacker News does not). */
+  tags?: string[];
 };
 
 /** A set of stories plus the instant the source was last read, for "updated N min ago". */
