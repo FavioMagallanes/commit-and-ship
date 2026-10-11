@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { getNewsSnapshot, getNewsStories } from "@/features/news-feed/api/get-news-snapshot";
-import type { NewsSnapshot, NewsStory } from "@/features/news-feed/model/news-story";
+import {
+  getNewsSnapshot,
+  getNewsStories,
+  type SourceSnapshot,
+} from "@/features/news-feed/api/get-news-snapshot";
+import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 const story = (id: string, source: NewsStory["source"]): NewsStory => ({
   id,
@@ -14,18 +18,24 @@ const story = (id: string, source: NewsStory["source"]): NewsStory => ({
   commentsCount: 0,
 });
 
-const snapshotOf =
-  (stories: NewsStory[], fetchedAt: string) => async (): Promise<NewsSnapshot> => ({
+const okSource =
+  (stories: NewsStory[], fetchedAt: string) => async (): Promise<SourceSnapshot> => ({
+    status: "ok",
     stories,
     fetchedAt,
   });
 
-const failing = async (): Promise<NewsSnapshot> => {
+const failedSource = async (): Promise<SourceSnapshot> => ({
+  status: "error",
+  fetchedAt: "2026-10-10T09:00:00.000Z",
+});
+
+const rejectingSource = async (): Promise<SourceSnapshot> => {
   throw new Error("source down");
 };
 
-const hn = snapshotOf([story("hn-1", "hn")], "2026-10-10T10:05:00.000Z");
-const devTo = snapshotOf([story("devto-1", "dev")], "2026-10-10T10:00:00.000Z");
+const hn = okSource([story("hn-1", "hn")], "2026-10-10T10:05:00.000Z");
+const devTo = okSource([story("devto-1", "dev")], "2026-10-10T10:00:00.000Z");
 
 describe("getNewsSnapshot", () => {
   it("combines the stories of every source and keeps the oldest fetch time", async () => {
@@ -35,21 +45,41 @@ describe("getNewsSnapshot", () => {
     expect(snapshot.fetchedAt).toBe("2026-10-10T10:00:00.000Z");
   });
 
-  it("still returns the other source's stories when one source fails", async () => {
-    const snapshot = await getNewsSnapshot([failing, devTo]);
+  it("keeps Hacker News when dev.to fails, ignoring the failed attempt's time", async () => {
+    const snapshot = await getNewsSnapshot([hn, failedSource]);
 
-    expect(snapshot.stories.map((item) => item.id)).toEqual(["devto-1"]);
-    expect(snapshot.fetchedAt).toBe("2026-10-10T10:00:00.000Z");
+    expect(snapshot).toEqual({
+      stories: [story("hn-1", "hn")],
+      fetchedAt: "2026-10-10T10:05:00.000Z",
+    });
+  });
+
+  it("keeps dev.to when Hacker News fails", async () => {
+    const snapshot = await getNewsSnapshot([failedSource, devTo]);
+
+    expect(snapshot).toEqual({
+      stories: [story("devto-1", "dev")],
+      fetchedAt: "2026-10-10T10:00:00.000Z",
+    });
   });
 
   it("throws when every source fails", async () => {
-    await expect(getNewsSnapshot([failing, failing])).rejects.toThrow();
+    await expect(getNewsSnapshot([failedSource, failedSource])).rejects.toThrow(
+      "Every news source failed",
+    );
+  });
+
+  it("treats a loader that rejects like a failed source", async () => {
+    const snapshot = await getNewsSnapshot([rejectingSource, devTo]);
+
+    expect(snapshot.stories.map((item) => item.id)).toEqual(["devto-1"]);
+    await expect(getNewsSnapshot([rejectingSource, failedSource])).rejects.toThrow();
   });
 });
 
 describe("getNewsStories", () => {
   it("returns only the combined stories", async () => {
-    const stories = await getNewsStories([hn, failing]);
+    const stories = await getNewsStories([hn, failedSource]);
 
     expect(stories.map((item) => item.id)).toEqual(["hn-1"]);
   });

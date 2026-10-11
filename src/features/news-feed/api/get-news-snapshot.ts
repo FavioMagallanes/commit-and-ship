@@ -2,9 +2,14 @@ import { getDevToSnapshot } from "@/features/news-feed/api/get-dev-to-stories";
 import { getHackerNewsSnapshot } from "@/features/news-feed/api/get-hacker-news-stories";
 import type { NewsSnapshot, NewsStory } from "@/features/news-feed/model/news-story";
 
-type LoadSnapshot = () => Promise<NewsSnapshot>;
+/** One read of a single source. Plain data, so it can be stored by "use cache". */
+export type SourceSnapshot =
+  | { status: "ok"; stories: NewsStory[]; fetchedAt: string }
+  | { status: "error"; fetchedAt: string };
 
-const defaultLoaders: LoadSnapshot[] = [getHackerNewsSnapshot, getDevToSnapshot];
+type LoadSourceSnapshot = () => Promise<SourceSnapshot>;
+
+const defaultLoaders: LoadSourceSnapshot[] = [getHackerNewsSnapshot, getDevToSnapshot];
 
 const toTime = (isoInstant: string) => new Date(isoInstant).getTime();
 
@@ -14,11 +19,11 @@ const toTime = (isoInstant: string) => new Date(isoInstant).getTime();
  * reads, so "updated N min ago" never looks fresher than the data really is.
  */
 export const getNewsSnapshot = async (
-  loaders: LoadSnapshot[] = defaultLoaders,
+  loaders: LoadSourceSnapshot[] = defaultLoaders,
 ): Promise<NewsSnapshot> => {
   const results = await Promise.allSettled(loaders.map((load) => load()));
   const snapshots = results.flatMap((result) =>
-    result.status === "fulfilled" ? [result.value] : [],
+    result.status === "fulfilled" && result.value.status === "ok" ? [result.value] : [],
   );
 
   const [first, ...rest] = snapshots;
@@ -40,5 +45,5 @@ export const getNewsSnapshot = async (
 };
 
 export const getNewsStories = async (
-  loaders: LoadSnapshot[] = defaultLoaders,
+  loaders: LoadSourceSnapshot[] = defaultLoaders,
 ): Promise<NewsStory[]> => (await getNewsSnapshot(loaders)).stories;

@@ -1,19 +1,41 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import type { SourceSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import { fetchHackerNewsFrontPage } from "@/features/news-feed/api/hacker-news";
-import type { NewsSnapshot, NewsStory } from "@/features/news-feed/model/news-story";
+import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 /**
- * Front page of Hacker News, cached on the server and revalidated every 10 minutes. `fetchedAt`
- * is taken when the cache entry is filled, so it tells how stale the data really is.
+ * Reads Hacker News once and never throws: a failure comes back as the error branch, because an
+ * error thrown inside a "use cache" scope fails the prerender, and with it the whole build.
  */
-export const getHackerNewsSnapshot = async (): Promise<NewsSnapshot> => {
-  "use cache";
-  cacheLife({ revalidate: 600 });
-  cacheTag("news", "hacker-news");
-
-  return { stories: await fetchHackerNewsFrontPage(), fetchedAt: new Date().toISOString() };
+export const readHackerNewsSnapshot = async (
+  fetchFn: typeof fetch = fetch,
+  now: () => Date = () => new Date(),
+): Promise<SourceSnapshot> => {
+  try {
+    const stories = await fetchHackerNewsFrontPage(fetchFn);
+    return { status: "ok", stories, fetchedAt: now().toISOString() };
+  } catch {
+    return { status: "error", fetchedAt: now().toISOString() };
+  }
 };
 
-export const getHackerNewsStories = async (): Promise<NewsStory[]> =>
-  (await getHackerNewsSnapshot()).stories;
+/**
+ * Front page of Hacker News, cached on the server and revalidated every 10 minutes; a failed read
+ * is retried after a minute instead. `fetchedAt` is taken when the cache entry is filled, so it
+ * tells how stale the data really is.
+ */
+export const getHackerNewsSnapshot = async (): Promise<SourceSnapshot> => {
+  "use cache";
+  cacheTag("news", "hacker-news");
+
+  const snapshot = await readHackerNewsSnapshot();
+  cacheLife({ revalidate: snapshot.status === "ok" ? 600 : 60 });
+  return snapshot;
+};
+
+export const getHackerNewsStories = async (): Promise<NewsStory[]> => {
+  const snapshot = await getHackerNewsSnapshot();
+  if (snapshot.status === "error") throw new Error("Hacker News could not be read");
+  return snapshot.stories;
+};
