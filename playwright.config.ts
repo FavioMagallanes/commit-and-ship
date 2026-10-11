@@ -19,7 +19,8 @@ export default defineConfig({
   webServer: {
     command: "pnpm build && pnpm start",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    // A leftover server on :3000 would serve stale code and give a false green, so fail loudly instead.
+    reuseExistingServer: false,
     timeout: 180_000,
   },
 });
