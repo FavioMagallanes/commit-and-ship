@@ -5,6 +5,7 @@ import { getHackerNewsStories } from "@/features/news-feed/api/get-hacker-news-s
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
 import type { Release } from "@/features/release-radar/model/release";
+import { cn } from "@/shared/lib/cn";
 import { formatElapsedTime } from "@/shared/lib/format-relative-time";
 
 type ActivityTerminalProps = {
@@ -20,6 +21,9 @@ const loadOrEmpty = async <T,>(load: () => Promise<T[]>): Promise<T[]> => {
     return [];
   }
 };
+
+// Small screens show three lines; the fourth only from md up.
+const MOBILE_LOG_SIZE = 3;
 
 const Dot = () => <span className="size-2.5 rounded-full bg-terminal-muted/40" />;
 
@@ -54,10 +58,13 @@ export const ActivityTerminal = async ({
         <p className="text-terminal-muted">sin novedades por ahora</p>
       ) : (
         <ul className="flex flex-col gap-1">
-          {log.map((entry) => (
+          {log.map((entry, index) => (
             <li
               key={`${entry.source}-${entry.publishedAt}-${entry.text}`}
-              className="grid grid-cols-[3rem_1.5rem_1fr] gap-x-2"
+              className={cn(
+                "grid grid-cols-[3rem_1.5rem_1fr] gap-x-2",
+                index >= MOBILE_LOG_SIZE && "hidden md:grid",
+              )}
             >
               <span className="text-terminal-accent">
                 {formatElapsedTime(entry.publishedAt, reference)}

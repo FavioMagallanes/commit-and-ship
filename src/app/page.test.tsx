@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { withNuqsTestingAdapter } from "nuqs/adapters/testing";
 import { describe, expect, it } from "vitest";
 
@@ -19,8 +19,35 @@ describe("Home page", () => {
     render(<Home {...props} />, { wrapper: withNuqsTestingAdapter() });
 
     expect(
-      screen.getByText(/lo que publican Hacker News y GitHub, ordenado por hora/),
+      screen.getByText(
+        "Lo que publican Hacker News y GitHub, ordenado por hora. Sin cuentas ni algoritmos.",
+      ),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Reunimos en un solo lugar lo que publican Hacker News y GitHub, ordenado por hora. Sin cuentas ni algoritmos.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("offers the search inside the page for small screens", () => {
+    render(<Home {...props} />, { wrapper: withNuqsTestingAdapter() });
+
+    expect(
+      within(screen.getByRole("main")).getByRole("searchbox", { name: "Buscar novedades" }),
+    ).toBeInTheDocument();
+  });
+
+  it("places the sidebar with the radar before the latest stories", () => {
+    render(<Home {...props} />, { wrapper: withNuqsTestingAdapter() });
+
+    const sidebar = screen.getByRole("complementary", { name: "Barra lateral" });
+    const latest = screen.getByRole("heading", { level: 2, name: "Más recientes" });
+
+    expect(
+      within(sidebar).getByRole("status", { name: "Cargando radar de versiones" }),
+    ).toBeInTheDocument();
+    expect(sidebar.compareDocumentPosition(latest) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("offers the topic filter in the intro", () => {

@@ -41,6 +41,27 @@ describe("ActivityTerminal", () => {
     expect(container).toHaveTextContent("3 hHNA bundler in Rust");
   });
 
+  it("keeps four entries but hides the oldest one below md", async () => {
+    const stories = ["a", "b", "c"].map((id, index) => ({
+      ...STORY,
+      id,
+      title: `Story ${id}`,
+      publishedAt: `2026-10-10T0${index + 6}:00:00Z`,
+    }));
+    loadStories.mockResolvedValueOnce(stories);
+    loadReleases.mockResolvedValueOnce([RELEASE]);
+
+    const { container } = render(await ActivityTerminal({ loadStories, loadReleases, now: NOW }));
+    const entries = Array.from(container.querySelectorAll("li"));
+
+    expect(entries).toHaveLength(4);
+    expect(entries.slice(0, 3).map((entry) => entry.className)).not.toContainEqual(
+      expect.stringMatching(/(^|\s)hidden(\s|$)/),
+    );
+    expect(entries[3]).toHaveClass("hidden", "md:grid");
+    expect(entries[3]).toHaveTextContent("Story a");
+  });
+
   it("still prints what it can when one source fails", async () => {
     loadStories.mockRejectedValueOnce(new Error("boom"));
     loadReleases.mockResolvedValueOnce([RELEASE]);

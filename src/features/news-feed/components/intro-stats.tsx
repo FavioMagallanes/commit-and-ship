@@ -38,7 +38,7 @@ export const IntroStats = async ({
   const todayCount = snapshot === null ? null : countRecentStories(snapshot.stories, reference);
 
   return (
-    <ul aria-label="Estadísticas" className="flex flex-wrap gap-x-8 gap-y-2">
+    <ul aria-label="Estadísticas" className="hidden flex-wrap gap-x-8 gap-y-2 md:flex">
       <Stat
         value={ACTIVE_SOURCES.length}
         label={ACTIVE_SOURCES.length === 1 ? "fuente" : "fuentes"}
