@@ -164,8 +164,8 @@ vercel login
 vercel deploy --prod
 ```
 
-El CI corre en cada push a `main`. Para que cada push también despliegue automáticamente hay que
-conectar el repositorio con `vercel git connect`.
+El repositorio está conectado a Vercel: cada push a `main` corre el CI y despliega a producción de
+forma automática. La conexión se hizo con `vercel git connect`.
 
 ## Límites conocidos
 
