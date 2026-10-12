@@ -3,7 +3,6 @@ import { cacheLife, cacheTag } from "next/cache";
 import type { SourceSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import { fetchHackerNewsFrontPage } from "@/features/news-feed/api/hacker-news";
 import { keepLastGoodStories } from "@/features/news-feed/api/keep-last-good-stories";
-import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 /**
  * Reads Hacker News once and never throws: a failure comes back as the error branch, because an
@@ -40,9 +39,3 @@ export const getHackerNewsSnapshot = keepLastGoodStories(
   "hacker-news",
   getCachedHackerNewsSnapshot,
 );
-
-export const getHackerNewsStories = async (): Promise<NewsStory[]> => {
-  const snapshot = await getHackerNewsSnapshot();
-  if (snapshot.status === "error") throw new Error("Hacker News could not be read");
-  return snapshot.stories;
-};

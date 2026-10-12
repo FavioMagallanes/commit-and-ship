@@ -3,7 +3,6 @@ import { cacheLife, cacheTag } from "next/cache";
 import { fetchDevToTopArticles } from "@/features/news-feed/api/dev-to";
 import type { SourceSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import { keepLastGoodStories } from "@/features/news-feed/api/keep-last-good-stories";
-import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 /**
  * Reads dev.to once and never throws: a failure comes back as the error branch, because an error
@@ -37,9 +36,3 @@ const getCachedDevToSnapshot = async (): Promise<SourceSnapshot> => {
 
 /** The cached read, plus the last good stories when the latest refill failed. */
 export const getDevToSnapshot = keepLastGoodStories("dev-to", getCachedDevToSnapshot);
-
-export const getDevToStories = async (): Promise<NewsStory[]> => {
-  const snapshot = await getDevToSnapshot();
-  if (snapshot.status === "error") throw new Error("dev.to could not be read");
-  return snapshot.stories;
-};
