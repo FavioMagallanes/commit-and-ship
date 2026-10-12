@@ -5,7 +5,7 @@ import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
 import { formatStoryMeta } from "@/features/news-feed/model/format-story-meta";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-story";
-import { classifyStoryTopic, type Topic, topicLabels } from "@/features/topics/model/topics";
+import { classifyStoryTopic, type TopicFilter, topicLabels } from "@/features/topics/model/topics";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { ExternalLink } from "@/shared/ui/external-link";
 import { Icon } from "@/shared/ui/icon";
@@ -17,8 +17,8 @@ type FeaturedStoryProps = {
   now?: Date;
   /** Search text; the highlight is hidden while searching. */
   query?: Promise<string>;
-  /** Chosen topic; the highlight is the top story of that topic. */
-  topic?: Promise<Topic | null>;
+  /** Chosen topic or the Blogs source filter; the highlight is the top story of that filter. */
+  topic?: Promise<TopicFilter | null>;
 };
 
 const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {

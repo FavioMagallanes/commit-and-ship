@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { classifyTopic, topicLabels, topics } from "@/features/topics/model/topics";
+import {
+  classifyTopic,
+  topicFilterLabels,
+  topicFilters,
+  topicLabels,
+  topics,
+} from "@/features/topics/model/topics";
 
 describe("topics", () => {
   it("lists the topics in display order with their labels", () => {
@@ -12,6 +18,22 @@ describe("topics", () => {
       "Seguridad",
       "Lenguajes",
     ]);
+  });
+
+  it("offers every topic plus the Blogs source filter, last", () => {
+    expect(topicFilters.map((filter) => topicFilterLabels[filter])).toEqual([
+      "IA",
+      "Frontend",
+      "Backend",
+      "DevOps",
+      "Seguridad",
+      "Lenguajes",
+      "Blogs",
+    ]);
+  });
+
+  it("never classifies a title as blogs, which is a source and not a topic", () => {
+    expect(classifyTopic("Our new blogs post about blogs")).toBeNull();
   });
 });
 

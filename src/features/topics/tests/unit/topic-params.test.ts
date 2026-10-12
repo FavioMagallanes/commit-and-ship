@@ -11,7 +11,13 @@ describe("loadTopic", () => {
     await expect(load({ topic: "devops", q: "rust" })).resolves.toBe("devops");
   });
 
+  it("reads the blogs source filter from the url", async () => {
+    await expect(load({ topic: "blogs" })).resolves.toBe("blogs");
+  });
+
   it("ignores an unknown topic", async () => {
+    await expect(load({ topic: "Blogs" })).resolves.toBeNull();
+    await expect(load({ topic: "blog" })).resolves.toBeNull();
     await expect(load({ topic: "herramientas" })).resolves.toBeNull();
     await expect(load({ topic: "IA" })).resolves.toBeNull();
   });

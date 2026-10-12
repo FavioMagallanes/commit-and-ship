@@ -3,7 +3,7 @@
 import { useQueryState } from "nuqs";
 
 import { topicParser } from "@/features/topics/model/topic-params";
-import { type Topic, topicLabels, topics } from "@/features/topics/model/topics";
+import { type TopicFilter, topicFilterLabels, topicFilters } from "@/features/topics/model/topics";
 import { Chip } from "@/shared/ui/chip";
 
 const topicQueryParser = topicParser.withOptions({ shallow: false, scroll: false });
@@ -12,7 +12,7 @@ export const TopicChips = () => {
   const [selected, setSelected] = useQueryState("topic", topicQueryParser);
 
   // Clicking the chip that is already pressed goes back to every topic.
-  const toggle = (topic: Topic) => void setSelected(selected === topic ? null : topic);
+  const toggle = (topic: TopicFilter) => void setSelected(selected === topic ? null : topic);
 
   return (
     <section aria-label="Filtrar por tema">
@@ -22,10 +22,10 @@ export const TopicChips = () => {
             Todo
           </Chip>
         </li>
-        {topics.map((topic) => (
+        {topicFilters.map((topic) => (
           <li key={topic} className="shrink-0">
             <Chip active={selected === topic} onClick={() => toggle(topic)}>
-              {topicLabels[topic]}
+              {topicFilterLabels[topic]}
             </Chip>
           </li>
         ))}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { filterByTopic } from "@/features/news-feed/model/filter-by-topic";
+import { filterStories } from "@/features/news-feed/model/filter-stories";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 const story = (id: string, title: string): NewsStory => ({
@@ -41,6 +42,29 @@ describe("filterByTopic", () => {
     };
 
     expect(filterByTopic([...stories, devToStory], "devops").map((item) => item.id)).toEqual(["5"]);
+  });
+
+  it("keeps only the blog posts for blogs, whatever their topic, in order", () => {
+    const blogPost = (id: string, title: string): NewsStory => ({
+      ...story(id, title),
+      source: "blog",
+      sourceName: "Next.js · Blog oficial",
+      points: 0,
+    });
+    const mixed = [
+      ...stories,
+      blogPost("b1", "Next.js 16.1"),
+      { ...story("d1", "Blogs I read"), source: "dev" as const, sourceName: "dev.to" },
+      blogPost("b2", "Node.js security release"),
+    ];
+
+    expect(filterByTopic(mixed, "blogs").map((item) => item.id)).toEqual(["b1", "b2"]);
+    expect(filterByTopic(stories, "blogs")).toEqual([]);
+    // Blog posts still belong to their keyword topic.
+    expect(filterByTopic(mixed, "seguridad").map((item) => item.id)).toEqual(["b2"]);
+    // The search applies on top of the source filter.
+    const blogs = filterByTopic(mixed, "blogs");
+    expect(filterStories(blogs, "security").map((item) => item.id)).toEqual(["b2"]);
   });
 
   it("does not mutate the given stories", () => {

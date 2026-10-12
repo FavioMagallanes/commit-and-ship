@@ -98,6 +98,19 @@ describe("FeaturedStory", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("renders nothing for Blogs, since blog posts have no points", async () => {
+    loadStories.mockResolvedValueOnce([
+      story("top", 90),
+      { ...story("post", 0), source: "blog", sourceName: "Next.js · Blog oficial" },
+    ]);
+
+    const { container } = render(
+      await FeaturedStory({ loadStories, now: NOW, topic: Promise.resolve("blogs") }),
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("renders nothing while searching", async () => {
     loadStories.mockResolvedValueOnce([story("top", 90)]);
 

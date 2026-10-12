@@ -19,6 +19,7 @@ describe("TopicChips", () => {
       "DevOps",
       "Seguridad",
       "Lenguajes",
+      "Blogs",
     ]);
     expect(screen.getByRole("button", { name: "Todo" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "IA" })).toHaveAttribute("aria-pressed", "false");
@@ -29,6 +30,27 @@ describe("TopicChips", () => {
 
     expect(screen.getByRole("button", { name: "IA" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "Todo" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("restores the Blogs filter from the url", () => {
+    render(<TopicChips />, { wrapper: withNuqsTestingAdapter({ searchParams: "?topic=blogs" }) });
+
+    expect(screen.getByRole("button", { name: "Blogs" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Todo" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("writes the Blogs filter to the url, keeping the search", async () => {
+    const onUrlUpdate = vi.fn();
+    render(<TopicChips />, {
+      wrapper: withNuqsTestingAdapter({ searchParams: "?q=react", onUrlUpdate }),
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Blogs" }));
+
+    await waitFor(() => expect(onUrlUpdate).toHaveBeenCalled());
+    expect(onUrlUpdate.mock.lastCall?.[0].searchParams.get("topic")).toBe("blogs");
+    expect(onUrlUpdate.mock.lastCall?.[0].searchParams.get("q")).toBe("react");
+    expect(screen.getByRole("button", { name: "Blogs" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("writes the chosen topic to the url", async () => {

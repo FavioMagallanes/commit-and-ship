@@ -8,7 +8,7 @@ import type { NewsStory } from "@/features/news-feed/model/news-story";
 import { paginateStories } from "@/features/news-feed/model/paginate-stories";
 import { pickFeaturedStory } from "@/features/news-feed/model/pick-featured-story";
 import { type SortOrder, sortStories } from "@/features/news-feed/model/sort-stories";
-import type { Topic } from "@/features/topics/model/topics";
+import type { TopicFilter } from "@/features/topics/model/topics";
 import { ErrorBanner } from "@/shared/ui/error-banner";
 import { RetryButton } from "@/shared/ui/retry-button";
 
@@ -24,8 +24,8 @@ type NewsFeedProps = {
   sort?: Promise<SortOrder>;
   /** How many stories the list shows; resolves from the url on the server. */
   limit?: Promise<number>;
-  /** Chosen topic; resolves from the url on the server. */
-  topic?: Promise<Topic | null>;
+  /** Chosen topic or the Blogs source filter; resolves from the url on the server. */
+  topic?: Promise<TopicFilter | null>;
 };
 
 const loadOrNull = async (loadStories: () => Promise<NewsStory[]>) => {

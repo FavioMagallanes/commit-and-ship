@@ -144,6 +144,72 @@ describe("NewsFeed", () => {
     expect(screen.getByRole("link", { name: "Limpiar filtros" })).toHaveAttribute("href", "/");
   });
 
+  it("keeps only the blog posts for Blogs, with their topic pill and no featured story", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "Top story", points: 900 },
+      { ...STORY, id: "dev-1", source: "dev", sourceName: "dev.to", title: "React tips" },
+      {
+        ...STORY,
+        id: "blog-1",
+        source: "blog",
+        sourceName: "React · Blog oficial",
+        title: "React 19.2",
+        points: 0,
+        publishedAt: "2026-10-08T10:00:00.000Z",
+      },
+      {
+        ...STORY,
+        id: "blog-2",
+        source: "blog",
+        sourceName: "Rust · Blog oficial",
+        title: "Announcing the 2026 survey",
+        points: 0,
+        publishedAt: "2026-10-09T10:00:00.000Z",
+      },
+    ]);
+
+    render(await NewsFeed({ loadStories, now: NOW, topic: Promise.resolve("blogs") }));
+
+    // Blog posts have no points, so none is featured and every one stays in the list.
+    expect(listTitles()).toEqual(["Announcing the 2026 survey", "React 19.2"]);
+    const reactPost = screen.getByRole("link", { name: "React 19.2" }).closest("article");
+    expect(reactPost).toHaveTextContent("Frontend");
+  });
+
+  it("applies the search on top of the Blogs filter", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "React news", points: 900 },
+      { ...STORY, id: "blog-1", source: "blog", title: "React Compiler v1.0", points: 0 },
+      { ...STORY, id: "blog-2", source: "blog", title: "Rust survey", points: 0 },
+    ]);
+
+    render(
+      await NewsFeed({
+        loadStories,
+        now: NOW,
+        query: Promise.resolve("react"),
+        topic: Promise.resolve("blogs"),
+      }),
+    );
+
+    expect(listTitles()).toEqual(["React Compiler v1.0"]);
+  });
+
+  it("offers to clear the filters when there are no blog posts", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...STORY, id: "hn-1", title: "Rust 1.90 is out", points: 500 },
+      { ...STORY, id: "hn-2", title: "Python packaging", points: 5 },
+    ]);
+
+    render(await NewsFeed({ loadStories, now: NOW, topic: Promise.resolve("blogs") }));
+
+    expect(screen.getByRole("heading", { name: "No encontramos novedades" })).toBeInTheDocument();
+    expect(
+      screen.getByText("Probá con otro término o quitá algún filtro para ver más resultados."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Limpiar filtros" })).toHaveAttribute("href", "/");
+  });
+
   it("suggests trying later, without a clear link, when no filter is active", async () => {
     loadStories.mockResolvedValueOnce([]);
 

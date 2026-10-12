@@ -31,6 +31,19 @@ test.describe("topics", () => {
     await expect(backend).toHaveAttribute("aria-pressed", "true");
   });
 
+  test("choosing Blogs puts the source filter in the url", async ({ page }) => {
+    await page.goto("/");
+    const blogs = page.getByRole("button", { name: "Blogs", exact: true });
+
+    // Same retry as above: only click while Blogs is not pressed, since a second click clears it.
+    await expect(async () => {
+      if ((await blogs.getAttribute("aria-pressed")) !== "true") await blogs.click();
+      await expect(page).toHaveURL(/[?&]topic=blogs/, { timeout: 1000 });
+    }).toPass();
+
+    await expect(blogs).toHaveAttribute("aria-pressed", "true");
+  });
+
   test("choosing Todo removes the topic from the url", async ({ page }) => {
     await page.goto("/?topic=backend");
     const all = page.getByRole("button", { name: "Todo", exact: true });

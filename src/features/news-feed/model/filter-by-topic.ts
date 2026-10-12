@@ -1,6 +1,9 @@
 import type { NewsStory } from "@/features/news-feed/model/news-story";
-import { classifyStoryTopic, type Topic } from "@/features/topics/model/topics";
+import { classifyStoryTopic, type TopicFilter } from "@/features/topics/model/topics";
 
-/** Stories of the chosen topic, in their original order; every story when no topic is chosen. */
-export const filterByTopic = (stories: NewsStory[], topic: Topic | null): NewsStory[] =>
-  topic === null ? stories : stories.filter((story) => classifyStoryTopic(story) === topic);
+const matchesFilter = (story: NewsStory, filter: TopicFilter): boolean =>
+  filter === "blogs" ? story.source === "blog" : classifyStoryTopic(story) === filter;
+
+/** Stories of the chosen filter, in their original order; every story when none is chosen. */
+export const filterByTopic = (stories: NewsStory[], topic: TopicFilter | null): NewsStory[] =>
+  topic === null ? stories : stories.filter((story) => matchesFilter(story, topic));

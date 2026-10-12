@@ -14,6 +14,16 @@ export const topicLabels: Record<Topic, string> = {
   lenguajes: "Lenguajes",
 };
 
+/**
+ * What the chips filter by, in display order: every topic plus "blogs", which keeps the official
+ * blog posts by their source instead of by keywords, so they are never a topic pill.
+ */
+export const topicFilters = [...topics, "blogs"] as const;
+
+export type TopicFilter = (typeof topicFilters)[number];
+
+export const topicFilterLabels: Record<TopicFilter, string> = { ...topicLabels, blogs: "Blogs" };
+
 // Keywords are normalized (lowercase, accent-free). When a title matches several topics, the
 // first one in this list wins: security news matters most, generic tech words matter least.
 const topicKeywords: ReadonlyArray<readonly [Topic, readonly string[]]> = [

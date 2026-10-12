@@ -89,6 +89,8 @@ Se implementan con React, `cva` y `cn`. Cada uno nace de un componente de Penpot
 | Icon         | 13 variantes                        | Ver sección de iconos                                 |
 | Select       | Cerrado, Abierto                    | Orden de la lista; menú propio, aún no está en Penpot |
 
+El Chip "Blogs", último de la fila después de "Lenguajes", es un filtro por fuente (posts de los blogs oficiales) y no un tema: usa el mismo `?topic=blogs` pero nunca aparece como Pill de tema.
+
 `Select` se implementó antes que en Penpot y debe agregarse allí. Cerrado es un botón sin caja ni borde: la etiqueta con dos puntos en `muted`, el valor elegido en `ink` semibold y un `chevron-down` que gira al abrir. Abierto muestra un panel alineado a la derecha del botón, con superficie (`surface`), borde (`line`), radio `lg` y sombra; la opción activa usa `soft` y la seleccionada `accent-soft` con texto `accent-text`. Sigue el patrón ARIA listbox.
 
 ## Pantallas y estados
