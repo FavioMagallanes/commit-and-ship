@@ -25,9 +25,9 @@ Commit & Ship es un agregador de novedades tech (Hacker News, GitHub Releases, d
 
 ### Idioma y nombres
 
-- Código, comentarios, commits, README y nombres de archivos y carpetas nuevos en inglés. Mantener nombres coherentes para los conceptos del dominio: `newsItem`, `source`, `release`, `ranking`, `topic`, `snapshot`.
+- Código, comentarios, commits y nombres de archivos y carpetas nuevos en inglés. Mantener nombres coherentes para los conceptos del dominio: `newsItem`, `source`, `release`, `ranking`, `topic`, `snapshot`.
 - Contenido de la interfaz en español: etiquetas, botones, ayudas, errores y textos accesibles.
-- Documentación del proyecto (`AGENTS.md`, `DESIGN.md`) y respuestas de entrega de los agentes en español. Conservar identificadores, comandos y nombres técnicos originales.
+- Documentación del proyecto (`README.md`, `AGENTS.md`, `DESIGN.md`) y respuestas de entrega de los agentes en español. Conservar identificadores, comandos y nombres técnicos originales.
 - **Archivos y carpetas en kebab-case**: `news-item.tsx`, `use-news-feed.ts`, `news-feed/`. Dentro del código, los componentes se nombran en PascalCase, los hooks con prefijo `use` y el resto en camelCase. Excepciones: nombres convencionales como `AGENTS.md`, `README.md`, `DESIGN.md` y archivos propios de Next (`page.tsx`, `layout.tsx`).
 - Los comentarios en el código solo explican una decisión, restricción o motivo que no es evidente; si el código puede reescribirse para explicarse solo, se prefiere eso.
 - No incorporar internacionalización sin necesidad y autorización explícitas.
