@@ -189,7 +189,8 @@ export const classifyTopic = (title: string): Topic | null => {
   return match ? match[0] : null;
 };
 
-// dev.to tags are single lowercase words. Same priority as the title keywords.
+// dev.to tags are single lowercase words; blog feeds reuse them as topic hints. Same priority as
+// the title keywords.
 const topicTags: ReadonlyArray<readonly [Topic, ReadonlySet<string>]> = [
   ["seguridad", new Set(["security", "cybersecurity", "infosec", "privacy"])],
   ["ia", new Set(["ai", "machinelearning", "deeplearning", "llm", "genai", "openai", "chatgpt"])],
@@ -199,7 +200,7 @@ const topicTags: ReadonlyArray<readonly [Topic, ReadonlySet<string>]> = [
   ],
   [
     "frontend",
-    new Set(["webdev", "javascript", "react", "vue", "svelte", "angular", "css", "html"]),
+    new Set(["webdev", "javascript", "react", "nextjs", "vue", "svelte", "angular", "css", "html"]),
   ],
   ["backend", new Set(["backend", "database", "api", "node", "postgres", "sql", "graphql"])],
   ["devops", new Set(["devops", "docker", "kubernetes", "aws", "cloud", "linux", "terraform"])],

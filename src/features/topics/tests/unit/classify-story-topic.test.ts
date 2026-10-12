@@ -18,6 +18,8 @@ describe("classifyTags", () => {
     [["go"], "lenguajes"],
     [["backend"], "backend"],
     [["database"], "backend"],
+    [["node"], "backend"],
+    [["nextjs"], "frontend"],
   ] as const)("classifies %j as %s", (tags, topic) => {
     expect(classifyTags(tags)).toBe(topic);
   });

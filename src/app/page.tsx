@@ -25,7 +25,9 @@ import { ACTIVE_SOURCES } from "@/shared/lib/active-sources";
 
 const listSourceNames = (kind: (typeof ACTIVE_SOURCES)[number]["kind"]) =>
   new Intl.ListFormat("es", { type: "conjunction" }).format(
-    ACTIVE_SOURCES.filter((source) => source.kind === kind).map((source) => source.name),
+    ACTIVE_SOURCES.filter((source) => source.kind === kind).map(
+      (source) => source.proseName ?? source.name,
+    ),
   );
 
 const feedSourcesLabel = listSourceNames("feed");

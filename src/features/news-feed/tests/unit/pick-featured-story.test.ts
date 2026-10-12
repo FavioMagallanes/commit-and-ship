@@ -51,6 +51,16 @@ describe("pickFeaturedStory", () => {
     expect(pickFeaturedStory(stories, "")?.id).toBe("dev-low");
   });
 
+  it("never features an official blog post, which has no points", () => {
+    const stories = [
+      story("blog", 0, "2026-10-10T12:00:00.000Z", "blog"),
+      story("hn", 4, "2026-10-09T10:00:00.000Z"),
+    ];
+
+    expect(pickFeaturedStory(stories, "")?.id).toBe("hn");
+    expect(pickFeaturedStory([story("blog", 0, undefined, "blog")], "")).toBeNull();
+  });
+
   it("picks nothing while the user is searching", () => {
     expect(pickFeaturedStory([story("a", 10)], "rust")).toBeNull();
     expect(pickFeaturedStory([story("a", 10)], "   ")?.id).toBe("a");

@@ -13,4 +13,8 @@ describe("formatStoryMeta", () => {
     expect(formatStoryMeta("Hacker News", 0, 1)).toBe("Hacker News · 1 comentario");
     expect(formatStoryMeta("dev.to", undefined, undefined)).toBe("dev.to");
   });
+
+  it("shows only the blog name for an official blog post, which has no counts", () => {
+    expect(formatStoryMeta("Node.js · Blog oficial", 0, 0)).toBe("Node.js · Blog oficial");
+  });
 });

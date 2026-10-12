@@ -44,6 +44,17 @@ describe("SourcesMenu", () => {
     expect(screen.getAllByRole("link")).toHaveLength(ACTIVE_SOURCES.length);
   });
 
+  it("lists the official blogs by their proper name", async () => {
+    const user = renderMenu();
+
+    await user.click(getTrigger());
+
+    expect(screen.getByRole("link", { name: "Blogs oficiales" })).toHaveAttribute(
+      "href",
+      "https://nodejs.org/en/blog",
+    );
+  });
+
   it("closes on Escape and returns focus to the trigger", async () => {
     const user = renderMenu();
     await user.click(getTrigger());

@@ -1,3 +1,4 @@
+import { getBlogSnapshot } from "@/features/news-feed/api/get-blogs-stories";
 import { getDevToSnapshot } from "@/features/news-feed/api/get-dev-to-stories";
 import { getHackerNewsSnapshot } from "@/features/news-feed/api/get-hacker-news-stories";
 import type { NewsSnapshot, NewsStory } from "@/features/news-feed/model/news-story";
@@ -9,7 +10,11 @@ export type SourceSnapshot =
 
 type LoadSourceSnapshot = () => Promise<SourceSnapshot>;
 
-const defaultLoaders: LoadSourceSnapshot[] = [getHackerNewsSnapshot, getDevToSnapshot];
+const defaultLoaders: LoadSourceSnapshot[] = [
+  getHackerNewsSnapshot,
+  getDevToSnapshot,
+  getBlogSnapshot,
+];
 
 const toTime = (isoInstant: string) => new Date(isoInstant).getTime();
 

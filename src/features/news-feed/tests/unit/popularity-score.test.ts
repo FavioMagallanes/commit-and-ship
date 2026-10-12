@@ -55,6 +55,12 @@ describe("popularityScores", () => {
     expect(scoresById(stories)).toEqual({ "hn-a": 1, "hn-b": 0, dev: 1 });
   });
 
+  it("scores a story without points at 0, even when it is the only one of its source", () => {
+    const stories = [story("hn", "hn", 10), story("blog", "blog", 0)];
+
+    expect(scoresById(stories)).toEqual({ hn: 1, blog: 0 });
+  });
+
   it("keeps every score between 0 and 1", () => {
     const stories = [5, 5, 0, 12, 7, 300].map((points, index) => story(`s${index}`, "dev", points));
 

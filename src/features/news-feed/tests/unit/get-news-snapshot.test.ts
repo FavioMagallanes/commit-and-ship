@@ -36,6 +36,10 @@ const rejectingSource = async (): Promise<SourceSnapshot> => {
 
 const hn = okSource([story("hn-1", "hn")], "2026-10-10T10:05:00.000Z");
 const devTo = okSource([story("devto-1", "dev")], "2026-10-10T10:00:00.000Z");
+const blogs = okSource(
+  [{ ...story("blog-nodejs-1", "blog"), sourceName: "Node.js · Blog oficial", points: 0 }],
+  "2026-10-10T09:50:00.000Z",
+);
 
 describe("getNewsSnapshot", () => {
   it("combines the stories of every source and keeps the oldest fetch time", async () => {
@@ -67,6 +71,34 @@ describe("getNewsSnapshot", () => {
     await expect(getNewsSnapshot([failedSource, failedSource])).rejects.toThrow(
       "Every news source failed",
     );
+  });
+
+  it("combines three sources and keeps the oldest fetch time", async () => {
+    const snapshot = await getNewsSnapshot([hn, devTo, blogs]);
+
+    expect(snapshot.stories.map((item) => item.id)).toEqual(["hn-1", "devto-1", "blog-nodejs-1"]);
+    expect(snapshot.fetchedAt).toBe("2026-10-10T09:50:00.000Z");
+  });
+
+  it("keeps the other two sources when the blogs fail", async () => {
+    const snapshot = await getNewsSnapshot([hn, devTo, failedSource]);
+
+    expect(snapshot).toEqual({
+      stories: [story("hn-1", "hn"), story("devto-1", "dev")],
+      fetchedAt: "2026-10-10T10:00:00.000Z",
+    });
+  });
+
+  it("keeps the blogs alone when the other sources fail", async () => {
+    const snapshot = await getNewsSnapshot([failedSource, rejectingSource, blogs]);
+
+    expect(snapshot.stories.map((item) => item.id)).toEqual(["blog-nodejs-1"]);
+  });
+
+  it("throws an AggregateError when all three sources fail", async () => {
+    await expect(
+      getNewsSnapshot([failedSource, rejectingSource, failedSource]),
+    ).rejects.toBeInstanceOf(AggregateError);
   });
 
   it("treats a loader that rejects like a failed source", async () => {

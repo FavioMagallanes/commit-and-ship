@@ -78,6 +78,35 @@ describe("sortStories", () => {
     expect(sortStories([], "popular")).toEqual([]);
   });
 
+  it("sends official blog posts, which have no points, after every scored story by popular", () => {
+    const day = "2026-10-10T10:00:00.000Z";
+    const stories = [
+      story("blog-old", "2026-10-08T10:00:00.000Z", 0, "blog"),
+      story("hn-10", day, 10),
+      story("blog-new", "2026-10-10T11:00:00.000Z", 0, "blog"),
+      story("dev-3", day, 3, "dev"),
+      story("hn-500", day, 500),
+    ];
+
+    expect(ids(sortStories(stories, "popular"))).toEqual([
+      "hn-500",
+      "dev-3",
+      "hn-10",
+      "blog-new",
+      "blog-old",
+    ]);
+  });
+
+  it("does not lift a lone story without points to the top by popular", () => {
+    const stories = [
+      story("hn-low", "2026-10-10T09:00:00.000Z", 5),
+      story("hn-high", "2026-10-10T09:00:00.000Z", 50),
+      story("blog", "2026-10-10T12:00:00.000Z", 0, "blog"),
+    ];
+
+    expect(ids(sortStories(stories, "popular"))).toEqual(["hn-high", "hn-low", "blog"]);
+  });
+
   it("breaks popularity ties with the newest story first", () => {
     const stories = [
       story("old", "2026-10-09T10:00:00.000Z", 100),

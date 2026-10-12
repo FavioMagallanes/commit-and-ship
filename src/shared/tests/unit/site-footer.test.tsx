@@ -20,7 +20,7 @@ describe("SiteFooter", () => {
     render(<SiteFooter />);
 
     expect(
-      screen.getByText("Fuentes: Hacker News · GitHub · dev.to · Mastodon"),
+      screen.getByText("Fuentes: Hacker News · GitHub · dev.to · Blogs oficiales · Mastodon"),
     ).toBeInTheDocument();
   });
 });

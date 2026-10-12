@@ -4,10 +4,18 @@ import type { Release } from "@/features/release-radar/model/release";
 const LOG_SIZE = 4;
 
 export type ActivityEntry = {
-  source: "HN" | "DEV" | "GH";
+  source: "HN" | "DEV" | "GH" | "RSS";
   text: string;
   /** ISO 8601 instant in UTC. */
   publishedAt: string;
+};
+
+// Three letters at most: that is all the terminal's source column fits.
+const SOURCE_LABELS: Record<NewsStory["source"], ActivityEntry["source"]> = {
+  hn: "HN",
+  dev: "DEV",
+  gh: "GH",
+  blog: "RSS",
 };
 
 const isValidInstant = (isoInstant: string) => !Number.isNaN(new Date(isoInstant).getTime());
@@ -16,7 +24,7 @@ const isValidInstant = (isoInstant: string) => !Number.isNaN(new Date(isoInstant
 export const buildActivityLog = (stories: NewsStory[], releases: Release[]): ActivityEntry[] =>
   [
     ...stories.map((story): ActivityEntry => ({
-      source: story.source === "dev" ? "DEV" : "HN",
+      source: SOURCE_LABELS[story.source],
       text: story.title,
       publishedAt: story.publishedAt,
     })),

@@ -20,12 +20,12 @@ describe("Home page", () => {
 
     expect(
       screen.getByText(
-        "Lo que publican Hacker News, GitHub y dev.to, ordenado por hora. Sin cuentas ni algoritmos.",
+        "Lo que publican Hacker News, GitHub, dev.to y los blogs oficiales, ordenado por hora. Sin cuentas ni algoritmos.",
       ),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Reunimos en un solo lugar lo que publican Hacker News, GitHub y dev.to y lo que se conversa en Mastodon, ordenado por hora. Sin cuentas ni algoritmos.",
+        "Reunimos en un solo lugar lo que publican Hacker News, GitHub, dev.to y los blogs oficiales y lo que se conversa en Mastodon, ordenado por hora. Sin cuentas ni algoritmos.",
       ),
     ).toBeInTheDocument();
   });

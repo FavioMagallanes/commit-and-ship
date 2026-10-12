@@ -52,4 +52,22 @@ describe("NewsItem", () => {
 
     expect(screen.queryByText("DevOps")).not.toBeInTheDocument();
   });
+
+  it("reads an official blog post as the blog name and its time, without counts", () => {
+    render(
+      <NewsItem
+        {...props}
+        source="blog"
+        sourceName="Node.js · Blog oficial"
+        points={0}
+        commentsCount={0}
+        publishedLabel="hace 8 h"
+      />,
+    );
+
+    expect(screen.getByRole("img", { name: "Blog" })).toBeInTheDocument();
+    expect(screen.getByText("hace 8 h").parentElement).toHaveTextContent(
+      /^Node\.js · Blog oficial · hace 8 h$/,
+    );
+  });
 });

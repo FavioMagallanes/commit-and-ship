@@ -59,6 +59,17 @@ describe("buildActivityLog", () => {
     expect(buildActivityLog([devToStory], []).map((entry) => entry.source)).toEqual(["DEV"]);
   });
 
+  it("tags official blog posts as RSS", () => {
+    const blogStory: NewsStory = {
+      ...story("blog-nodejs-1", "Node.js v24.9.0 (Current)", "2026-10-10T11:00:00Z"),
+      source: "blog",
+      sourceName: "Node.js · Blog oficial",
+      points: 0,
+    };
+
+    expect(buildActivityLog([blogStory], []).map((entry) => entry.source)).toEqual(["RSS"]);
+  });
+
   it("keeps only the most recent entries", () => {
     const stories = Array.from({ length: 10 }, (_, index) =>
       story(`s${index}`, `Story ${index}`, `2026-10-10T0${index}:00:00Z`),
