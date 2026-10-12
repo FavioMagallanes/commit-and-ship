@@ -20,6 +20,10 @@ const story = (
 });
 
 describe("pickFeaturedStory", () => {
+  it("picks nothing when there is a single story, so the list can show it instead of an empty state", () => {
+    expect(pickFeaturedStory([story("only", 90)], "")).toBeNull();
+  });
+
   it("picks the story with the most points", () => {
     const stories = [story("a", 10), story("b", 90), story("c", 40)];
 
@@ -62,8 +66,10 @@ describe("pickFeaturedStory", () => {
   });
 
   it("picks nothing while the user is searching", () => {
-    expect(pickFeaturedStory([story("a", 10)], "rust")).toBeNull();
-    expect(pickFeaturedStory([story("a", 10)], "   ")?.id).toBe("a");
+    const stories = [story("a", 10), story("b", 5)];
+
+    expect(pickFeaturedStory(stories, "rust")).toBeNull();
+    expect(pickFeaturedStory(stories, "   ")?.id).toBe("a");
   });
 
   it("picks nothing when no story has points", () => {

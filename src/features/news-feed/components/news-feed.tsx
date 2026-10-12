@@ -90,9 +90,8 @@ export const NewsFeed = async ({
 
   // The topic narrows every story first, so the featured one and the list both respect it.
   const stories = filterByTopic(loaded.stories, selectedTopic);
-  // The featured story has its own card above the list, so the list leaves it out, unless it is
-  // the only story: an empty list would wrongly say there is nothing to show.
-  const featured = stories.length > 1 ? pickFeaturedStory(stories, searchText) : null;
+  // The featured story has its own card above the list, so the list leaves it out.
+  const featured = pickFeaturedStory(stories, searchText);
   const listed = filterStories(stories, searchText).filter((story) => story.id !== featured?.id);
   const { visible, hasMore, nextLimit } = paginateStories(sortStories(listed, order), pageLimit);
 

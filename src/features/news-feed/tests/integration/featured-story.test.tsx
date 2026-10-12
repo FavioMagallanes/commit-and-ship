@@ -35,7 +35,7 @@ describe("FeaturedStory", () => {
   });
 
   it("shows the source, points, comments and how long ago it was published", async () => {
-    loadStories.mockResolvedValueOnce([story("top", 90)]);
+    loadStories.mockResolvedValueOnce([story("low", 10), story("top", 90)]);
 
     render(await FeaturedStory({ loadStories, now: NOW }));
 
@@ -44,7 +44,7 @@ describe("FeaturedStory", () => {
   });
 
   it("offers a distinguishable link to read it at the source", async () => {
-    loadStories.mockResolvedValueOnce([story("top", 90)]);
+    loadStories.mockResolvedValueOnce([story("low", 10), story("top", 90)]);
 
     render(await FeaturedStory({ loadStories, now: NOW }));
 
@@ -56,6 +56,7 @@ describe("FeaturedStory", () => {
 
   it("shows the topic pill right after the Destacado pill", async () => {
     loadStories.mockResolvedValueOnce([
+      story("low", 10),
       { ...story("top", 90), title: "A critical vulnerability in OpenSSH" },
     ]);
 
@@ -66,7 +67,7 @@ describe("FeaturedStory", () => {
   });
 
   it("shows no topic pill when the story has no topic", async () => {
-    loadStories.mockResolvedValueOnce([story("top", 90)]);
+    loadStories.mockResolvedValueOnce([story("low", 10), story("top", 90)]);
 
     render(await FeaturedStory({ loadStories, now: NOW }));
 
@@ -80,12 +81,26 @@ describe("FeaturedStory", () => {
       { ...story("top", 900), title: "Triple-A Minesweeper" },
       { ...story("rust", 50), title: "Rust 1.90 is out" },
       { ...story("python", 10), title: "Python packaging" },
+      { ...story("golang", 5), title: "Go 1.24 released" },
     ]);
 
     render(await FeaturedStory({ loadStories, now: NOW, topic: Promise.resolve("lenguajes") }));
 
     expect(screen.getByRole("heading", { level: 2, name: "Rust 1.90 is out" })).toBeInTheDocument();
     expect(screen.getByText("Lenguajes")).toBeInTheDocument();
+  });
+
+  it("renders nothing when the chosen topic has a single story, which stays in the list", async () => {
+    loadStories.mockResolvedValueOnce([
+      { ...story("top", 900), title: "Triple-A Minesweeper" },
+      { ...story("rust", 50), title: "Rust 1.90 is out" },
+    ]);
+
+    const { container } = render(
+      await FeaturedStory({ loadStories, now: NOW, topic: Promise.resolve("lenguajes") }),
+    );
+
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("renders nothing when no story has the chosen topic", async () => {
