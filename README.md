@@ -153,9 +153,19 @@ Las reglas de desarrollo del repositorio (convenciones, arquitectura, seguridad 
 
 ## Despliegue
 
-El proyecto se despliega en [Vercel](https://vercel.com) conectado a este repositorio. No requiere
-variables de entorno. Cada push a `main` dispara el CI y, con la integración activa, un nuevo
-despliegue.
+En producción: **<https://commit-and-ship.vercel.app>**
+
+El proyecto se despliega en [Vercel](https://vercel.com) (plan Hobby) y no requiere variables de
+entorno. Vercel detecta Next.js y pnpm por sí solo, así que el despliegue manual es:
+
+```bash
+npm install -g vercel
+vercel login
+vercel deploy --prod
+```
+
+El CI corre en cada push a `main`. Para que cada push también despliegue automáticamente hay que
+conectar el repositorio con `vercel git connect`.
 
 ## Límites conocidos
 
