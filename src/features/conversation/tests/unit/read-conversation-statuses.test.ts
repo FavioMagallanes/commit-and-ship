@@ -4,6 +4,8 @@ import { readConversationStatuses } from "@/features/conversation/api/get-conver
 
 import { MASTODON_TAG_TIMELINE } from "../fixtures/mastodon-tag-timeline";
 
+const now = () => new Date("2026-10-10T10:00:00.000Z");
+
 const timingOut = vi.fn(async (): Promise<Response> => {
   throw new DOMException("The operation was aborted due to timeout", "TimeoutError");
 });
@@ -16,9 +18,11 @@ describe("readConversationStatuses", () => {
   it("returns the statuses when Mastodon answers", async () => {
     const result = await readConversationStatuses(
       vi.fn(async () => Response.json(MASTODON_TAG_TIMELINE)),
+      now,
     );
 
     expect(result.status).toBe("ok");
+    expect(result.fetchedAt).toBe("2026-10-10T10:00:00.000Z");
     if (result.status === "ok") expect(result.statuses).toHaveLength(2);
   });
 
@@ -39,6 +43,9 @@ describe("readConversationStatuses", () => {
     ["Mastodon answers with an error status", serverError],
     ["the response does not match the schema", unexpectedBody],
   ])("returns the error branch instead of throwing when %s", async (_case, fetchFn) => {
-    await expect(readConversationStatuses(fetchFn)).resolves.toEqual({ status: "error" });
+    await expect(readConversationStatuses(fetchFn, now)).resolves.toEqual({
+      status: "error",
+      fetchedAt: "2026-10-10T10:00:00.000Z",
+    });
   });
 });

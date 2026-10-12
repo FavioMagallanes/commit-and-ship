@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import type { ConversationResult } from "@/features/conversation/api/get-conversation-statuses";
 import { Conversation } from "@/features/conversation/components/conversation";
 import type { MastodonStatus } from "@/features/conversation/model/mastodon-status";
 
@@ -21,16 +22,17 @@ const status = (acct: string, favourites: number): MastodonStatus => ({
   account: { acct, bot: false, url: `https://mastodon.social/@${acct}` },
 });
 
-const loadStatuses = vi.fn<() => Promise<MastodonStatus[]>>();
+const loadStatuses = vi.fn<() => Promise<ConversationResult>>();
+const mockStatuses = (statuses: MastodonStatus[]) =>
+  loadStatuses.mockResolvedValueOnce({
+    status: "ok",
+    statuses,
+    fetchedAt: "2026-10-10T11:00:00.000Z",
+  });
 
 describe("Conversation", () => {
   it("lists the top three posts under a named section, best first", async () => {
-    loadStatuses.mockResolvedValueOnce([
-      status("ana", 1),
-      status("beto", 9),
-      status("carla", 5),
-      status("dani", 0),
-    ]);
+    mockStatuses([status("ana", 1), status("beto", 9), status("carla", 5), status("dani", 0)]);
 
     render(await Conversation({ loadStatuses, now: NOW }));
 
@@ -61,8 +63,36 @@ describe("Conversation", () => {
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
 
+  it("shows saved posts under a banner, inside the card, when Mastodon fails", async () => {
+    loadStatuses.mockResolvedValueOnce({
+      status: "error",
+      fetchedAt: "2026-10-10T11:59:00.000Z",
+      stale: { statuses: [status("ana", 1)], savedAt: "2026-10-10T09:00:00.000Z" },
+    });
+
+    render(await Conversation({ loadStatuses, now: NOW }));
+
+    const section = screen.getByRole("region", { name: "En conversación" });
+    const banner = within(section).getByRole("alert");
+    expect(banner).toHaveTextContent("No pudimos actualizar las conversaciones");
+    expect(banner).toHaveTextContent("Mostramos contenido guardado de hace 3 h");
+    expect(banner).toContainElement(screen.getByRole("button", { name: "Reintentar" }));
+    const item = within(section).getByRole("listitem");
+    expect(banner.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(item).getByText("@ana")).toBeInTheDocument();
+  });
+
+  it("shows only the error banner when Mastodon fails with nothing saved", async () => {
+    loadStatuses.mockResolvedValueOnce({ status: "error", fetchedAt: "2026-10-10T11:59:00.000Z" });
+
+    render(await Conversation({ loadStatuses, now: NOW }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent("No pudimos cargar las conversaciones");
+    expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+  });
+
   it("says so when no post is worth showing", async () => {
-    loadStatuses.mockResolvedValueOnce([{ ...status("ana", 1), sensitive: true }]);
+    mockStatuses([{ ...status("ana", 1), sensitive: true }]);
 
     render(await Conversation({ loadStatuses, now: NOW }));
 
