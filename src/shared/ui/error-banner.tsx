@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { Icon } from "@/shared/ui/icon";
 
 type ErrorBannerProps = {
@@ -22,3 +23,22 @@ export const ErrorBanner = ({ title, children, action }: ErrorBannerProps) => (
     {action ? <div className="pt-1">{action}</div> : null}
   </div>
 );
+
+type StaleContentBannerProps = {
+  title: string;
+  /** ISO 8601 instant in UTC when the saved content was read. */
+  savedAt: string;
+  now: Date;
+  action?: ReactNode;
+};
+
+/** Error banner placed above saved content, telling how old that content is. */
+export const StaleContentBanner = ({ title, savedAt, now, action }: StaleContentBannerProps) => {
+  const age = formatRelativeTime(savedAt, now);
+
+  return (
+    <ErrorBanner title={title} action={action}>
+      {age === "" ? "Mostramos contenido guardado." : `Mostramos contenido guardado de ${age}`}
+    </ErrorBanner>
+  );
+};
