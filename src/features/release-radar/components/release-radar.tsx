@@ -1,20 +1,23 @@
 import { connection } from "next/server";
 
 import { retryReleases } from "@/features/release-radar/actions/retry-releases";
-import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
+import {
+  getLatestReleasesResult,
+  type ReleasesResult,
+  releasesToShow,
+} from "@/features/release-radar/api/get-latest-releases";
 import { filterReleases } from "@/features/release-radar/model/filter-releases";
 import { isRecentRelease } from "@/features/release-radar/model/is-recent-release";
-import type { Release } from "@/features/release-radar/model/release";
 import { sortReleasesByDate } from "@/features/release-radar/model/sort-releases";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
 import { CardHeader } from "@/shared/ui/card-header";
-import { ErrorBanner } from "@/shared/ui/error-banner";
+import { ErrorBanner, StaleContentBanner } from "@/shared/ui/error-banner";
 import { RetryButton } from "@/shared/ui/retry-button";
 
 import { RadarRow } from "./radar-row";
 
 type ReleaseRadarProps = {
-  loadReleases?: () => Promise<Release[]>;
+  loadReleases?: () => Promise<ReleasesResult>;
   now?: Date;
   /** Search text; resolves from the url on the server. */
   query?: Promise<string>;
@@ -24,24 +27,24 @@ type ReleaseRadarProps = {
 const RADAR_SIZE = 6;
 const MOBILE_RADAR_SIZE = 4;
 
-const loadOrNull = async (loadReleases: () => Promise<Release[]>) => {
+const loadOrNull = async (loadReleases: () => Promise<ReleasesResult>) => {
   try {
-    return await loadReleases();
+    return releasesToShow(await loadReleases());
   } catch {
     return null;
   }
 };
 
 export const ReleaseRadar = async ({
-  loadReleases = getLatestReleases,
+  loadReleases = getLatestReleasesResult,
   now,
   query = Promise.resolve(""),
 }: ReleaseRadarProps) => {
-  const [releases, searchText] = await Promise.all([loadOrNull(loadReleases), query]);
+  const [shown, searchText] = await Promise.all([loadOrNull(loadReleases), query]);
   const visibleReleases =
-    releases === null
+    shown === null
       ? null
-      : sortReleasesByDate(filterReleases(releases, searchText)).slice(0, RADAR_SIZE);
+      : sortReleasesByDate(filterReleases(shown.releases, searchText)).slice(0, RADAR_SIZE);
   // "New" depends on the current time, so the radar renders per request (the data stays cached).
   if (!now) await connection();
   const reference = now ?? new Date();
@@ -52,6 +55,14 @@ export const ReleaseRadar = async ({
       className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6"
     >
       <CardHeader id="release-radar-heading" title="Radar de versiones" href="/releases" />
+      {shown !== null && shown.savedAt !== null ? (
+        <StaleContentBanner
+          title="No pudimos actualizar el radar de versiones"
+          savedAt={shown.savedAt}
+          now={reference}
+          action={<RetryButton action={retryReleases} />}
+        />
+      ) : null}
       {visibleReleases === null ? (
         <ErrorBanner
           title="No pudimos cargar el radar de versiones"

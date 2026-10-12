@@ -1,37 +1,43 @@
 import { connection } from "next/server";
 
 import { retryReleases } from "@/features/release-radar/actions/retry-releases";
-import { getLatestReleases } from "@/features/release-radar/api/get-latest-releases";
+import {
+  getLatestReleasesResult,
+  type ReleasesResult,
+  releasesToShow,
+} from "@/features/release-radar/api/get-latest-releases";
 import { isRecentRelease } from "@/features/release-radar/model/is-recent-release";
-import type { Release } from "@/features/release-radar/model/release";
 import { sortReleasesByDate } from "@/features/release-radar/model/sort-releases";
 import { formatRelativeTime } from "@/shared/lib/format-relative-time";
-import { ErrorBanner } from "@/shared/ui/error-banner";
+import { ErrorBanner, StaleContentBanner } from "@/shared/ui/error-banner";
 import { RetryButton } from "@/shared/ui/retry-button";
 
 import { RadarRow } from "./radar-row";
 
 type ReleaseListProps = {
-  loadReleases?: () => Promise<Release[]>;
+  loadReleases?: () => Promise<ReleasesResult>;
   now?: Date;
 };
 
-const loadOrNull = async (loadReleases: () => Promise<Release[]>) => {
+const loadOrNull = async (loadReleases: () => Promise<ReleasesResult>) => {
   try {
-    return await loadReleases();
+    return releasesToShow(await loadReleases());
   } catch {
     return null;
   }
 };
 
 /** Every tracked release, most recent first: the full version of the home radar. */
-export const ReleaseList = async ({ loadReleases = getLatestReleases, now }: ReleaseListProps) => {
-  const releases = await loadOrNull(loadReleases);
+export const ReleaseList = async ({
+  loadReleases = getLatestReleasesResult,
+  now,
+}: ReleaseListProps) => {
+  const shown = await loadOrNull(loadReleases);
   // "New" and the relative times depend on the clock, so the list renders per request.
   if (!now) await connection();
   const reference = now ?? new Date();
 
-  if (releases === null) {
+  if (shown === null) {
     return (
       <ErrorBanner
         title="No pudimos cargar las versiones"
@@ -42,23 +48,41 @@ export const ReleaseList = async ({ loadReleases = getLatestReleases, now }: Rel
     );
   }
 
-  if (releases.length === 0) {
-    return <p className="text-base text-muted">Todavía no hay versiones para mostrar.</p>;
+  const staleBanner =
+    shown.savedAt === null ? null : (
+      <StaleContentBanner
+        title="No pudimos actualizar las versiones"
+        savedAt={shown.savedAt}
+        now={reference}
+        action={<RetryButton action={retryReleases} />}
+      />
+    );
+
+  if (shown.releases.length === 0) {
+    return (
+      <>
+        {staleBanner}
+        <p className="text-base text-muted">Todavía no hay versiones para mostrar.</p>
+      </>
+    );
   }
 
   return (
-    <ul className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6">
-      {sortReleasesByDate(releases).map((release) => (
-        <RadarRow
-          key={release.repo}
-          name={release.name}
-          version={release.version}
-          href={release.url}
-          publishedAt={release.publishedAt}
-          publishedLabel={formatRelativeTime(release.publishedAt, reference)}
-          isNew={isRecentRelease(release.publishedAt, reference)}
-        />
-      ))}
-    </ul>
+    <div className="flex flex-col gap-5">
+      {staleBanner}
+      <ul className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6">
+        {sortReleasesByDate(shown.releases).map((release) => (
+          <RadarRow
+            key={release.repo}
+            name={release.name}
+            version={release.version}
+            href={release.url}
+            publishedAt={release.publishedAt}
+            publishedLabel={formatRelativeTime(release.publishedAt, reference)}
+            isNew={isRecentRelease(release.publishedAt, reference)}
+          />
+        ))}
+      </ul>
+    </div>
   );
 };
