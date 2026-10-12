@@ -8,7 +8,11 @@ const NOW = new Date("2026-10-10T12:00:00Z");
 
 const loadSnapshot = vi.fn<() => Promise<NewsSnapshot>>();
 
-const snapshotFetchedAt = (fetchedAt: string): NewsSnapshot => ({ stories: [], fetchedAt });
+const snapshotFetchedAt = (fetchedAt: string): NewsSnapshot => ({
+  stories: [],
+  fetchedAt,
+  staleSources: [],
+});
 
 describe("UpdatedStatus", () => {
   it("tells how long ago the stories were updated", async () => {

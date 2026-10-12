@@ -2,6 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import type { SourceSnapshot } from "@/features/news-feed/api/get-news-snapshot";
 import { fetchHackerNewsFrontPage } from "@/features/news-feed/api/hacker-news";
+import { keepLastGoodStories } from "@/features/news-feed/api/keep-last-good-stories";
 import type { NewsStory } from "@/features/news-feed/model/news-story";
 
 /**
@@ -25,7 +26,7 @@ export const readHackerNewsSnapshot = async (
  * is retried after a minute instead. `fetchedAt` is taken when the cache entry is filled, so it
  * tells how stale the data really is.
  */
-export const getHackerNewsSnapshot = async (): Promise<SourceSnapshot> => {
+const getCachedHackerNewsSnapshot = async (): Promise<SourceSnapshot> => {
   "use cache";
   cacheTag("news", "hacker-news");
 
@@ -33,6 +34,12 @@ export const getHackerNewsSnapshot = async (): Promise<SourceSnapshot> => {
   cacheLife({ revalidate: snapshot.status === "ok" ? 600 : 60 });
   return snapshot;
 };
+
+/** The cached read, plus the last good stories when the latest refill failed. */
+export const getHackerNewsSnapshot = keepLastGoodStories(
+  "hacker-news",
+  getCachedHackerNewsSnapshot,
+);
 
 export const getHackerNewsStories = async (): Promise<NewsStory[]> => {
   const snapshot = await getHackerNewsSnapshot();

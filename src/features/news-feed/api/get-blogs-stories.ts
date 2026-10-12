@@ -2,6 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { fetchBlogFeeds } from "@/features/news-feed/api/blogs";
 import type { SourceSnapshot } from "@/features/news-feed/api/get-news-snapshot";
+import { keepLastGoodStories } from "@/features/news-feed/api/keep-last-good-stories";
 
 /**
  * Reads every official blog once and never throws: a failure comes back as the error branch,
@@ -24,7 +25,7 @@ export const readBlogSnapshot = async (
  * Newest posts of the official blogs, cached on the server and revalidated every 30 minutes,
  * since blogs publish a few times a week; a failed read is retried after a minute instead.
  */
-export const getBlogSnapshot = async (): Promise<SourceSnapshot> => {
+const getCachedBlogSnapshot = async (): Promise<SourceSnapshot> => {
   "use cache";
   cacheTag("news", "blogs");
 
@@ -32,3 +33,6 @@ export const getBlogSnapshot = async (): Promise<SourceSnapshot> => {
   cacheLife({ revalidate: snapshot.status === "ok" ? 1_800 : 60 });
   return snapshot;
 };
+
+/** The cached read, plus the last good stories when the latest refill failed. */
+export const getBlogSnapshot = keepLastGoodStories("blogs", getCachedBlogSnapshot);

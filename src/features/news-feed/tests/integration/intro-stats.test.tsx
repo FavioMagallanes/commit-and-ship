@@ -21,7 +21,11 @@ const FETCHED_AT = "2026-10-10T11:48:00.000Z";
 
 const loadSnapshot = vi.fn<() => Promise<NewsSnapshot>>();
 
-const snapshot = (stories: NewsStory[]): NewsSnapshot => ({ stories, fetchedAt: FETCHED_AT });
+const snapshot = (stories: NewsStory[]): NewsSnapshot => ({
+  stories,
+  fetchedAt: FETCHED_AT,
+  staleSources: [],
+});
 
 describe("IntroStats", () => {
   it("shows how many sources are aggregated and how many stories are from today", async () => {

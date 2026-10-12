@@ -5,7 +5,8 @@ import ReleasesPage, { metadata } from "@/app/releases/page";
 
 // The page shell must not reach GitHub; the list itself is covered by the ReleaseList tests.
 vi.mock("@/features/release-radar/api/get-latest-releases", () => ({
-  getLatestReleases: () => new Promise(() => {}),
+  getLatestReleasesResult: () => new Promise(() => {}),
+  releasesToShow: () => null,
 }));
 
 describe("Releases page", () => {
